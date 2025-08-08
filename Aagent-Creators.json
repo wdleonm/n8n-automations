@@ -1,0 +1,1152 @@
+{
+  "name": "Agent creators",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.path }}{{ $json['creators-filename'] }}.json",
+        "options": {}
+      },
+      "id": "aba9babf-c7d5-4299-843e-ecee4198b703",
+      "name": "stats_aggregate_creators",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -688,
+        1280
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.path }}{{ $json['workflows-filename'] }}.json",
+        "options": {}
+      },
+      "id": "6f87c5fe-aa21-482b-b20f-b12178a82c56",
+      "name": "stats_aggregate_workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -688,
+        1504
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4bcb91c6-d250-4cb4-8ee1-022df13550e1",
+              "name": "path",
+              "type": "string",
+              "value": "https://raw.githubusercontent.com/teds-tech-talks/n8n-community-leaderboard/refs/heads/main/"
+            },
+            {
+              "id": "a910a798-0bfe-41b1-a4f1-41390c7f6997",
+              "name": "workflows-filename",
+              "type": "string",
+              "value": "=stats_aggregate_workflows"
+            },
+            {
+              "id": "e977e816-dc1e-43ce-9393-d6488e6832ca",
+              "name": "creators-filename",
+              "type": "string",
+              "value": "=stats_aggregate_creators"
+            },
+            {
+              "id": "20efae68-948e-445c-ab89-7dd23149dd50",
+              "name": "chart-filename",
+              "type": "string",
+              "value": "=stats_aggregate_chart"
+            },
+            {
+              "id": "14233ab4-3fa4-4e26-8032-6ffe26cb601e",
+              "name": "datetime",
+              "type": "string",
+              "value": "={{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "id": "f63dc683-a430-43ec-9c25-53fa5c0a3ced",
+              "name": "username",
+              "type": "string",
+              "value": "={{ $json.query.username }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c6752fd9-5541-40e7-a31d-c8a431999403",
+      "name": "Global Variables",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -1104,
+        1488
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "76f4b20e-519e-4d46-aeac-c6c3f98a69fd",
+              "name": "data",
+              "type": "array",
+              "value": "={{ $json.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "33e82640-169a-4eb3-9edb-4403ed1ed4fb",
+      "name": "Parse Workflow Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -320,
+        1568
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "76f4b20e-519e-4d46-aeac-c6c3f98a69fd",
+              "name": "data",
+              "type": "array",
+              "value": "={{ $json.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b931f59b-e6c5-4bbd-90e7-a8422c965255",
+      "name": "Parse Creators Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -320,
+        1232
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "maxItems": 25
+      },
+      "id": "c8293cec-a438-42b4-86fb-0ea46ca347df",
+      "name": "Take Top 25 Creators",
+      "type": "n8n-nodes-base.limit",
+      "position": [
+        304,
+        1232
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "79453f0d-e317-41e0-8d8f-742a89da574f",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        -128,
+        1920
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "21b17fb0-1809-4dc0-b775-cf43a570aa3a",
+              "operator": {
+                "name": "filter.operator.equals",
+                "type": "string",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $json.username }}",
+              "rightValue": "={{ $('Global Variables').item.json.username }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a512f384-c667-4a17-8ecb-67c1b226a8d0",
+      "name": "Filter By Creator Username",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        -320,
+        1920
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "d5425ae0-cf27-4810-913c-92d2a6662e08",
+      "name": "gpt-4o-mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -1408,
+        608
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n \"query\": \n {\n \"username\": \n \"joe\"\n }\n}"
+      },
+      "id": "c8344348-3039-416b-99c3-13a34b1a0720",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -1424,
+        1488
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c96b4ae7-4593-4c46-a529-8e229f3be17a",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -1424,
+        240
+      ],
+      "webhookId": "c118849f-57c9-40cf-bde6-dddefb9adcf4",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "name": "n8n_creator_stats",
+        "description": "Call this tool to get n8n Creator Stats.",
+        "workflowId": "={{ $workflow.id }}",
+        "specifyInputSchema": true,
+        "jsonSchemaExample": "{\n \"username\": \"n8n creator username\"\n}"
+      },
+      "id": "da5c15e8-d135-42dd-8d29-02890085d5c9",
+      "name": "Workflow Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        -800,
+        608
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "output",
+        "options": {
+          "fileName": "=creator-summary"
+        }
+      },
+      "id": "c8da5bf5-2696-4644-a6bb-ab5df0d6b82d",
+      "name": "creator-summary",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        -464,
+        240
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eeff1310-2e1c-4ea4-9107-a14b1979f74f",
+              "name": "response",
+              "type": "string",
+              "value": "={{ $json.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "efbed531-9008-4b17-9fdb-ec777d7c7b21",
+      "name": "Workflow Response",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        144,
+        1920
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are tasked with generating a **comprehensive Markdown report** about a specific n8n community workflow contributor using the provided tools. Your report should not only address the user's query but also provide meaningful insights into the contributor's impact on the n8n community. Follow the structure below:\n\n## Detailed Summary\n- Provide a thorough summary of the contributor's workflows.\n- Highlight unique features, key use cases, and notable technical components for each workflow.\n\n## Workflows\nCreate a well-formatted markdown table with these columns:\n- **Workflow Name**: The name of the workflow. Keep the emojies of they exist.\n- **Description**: A brief overview of its purpose and functionality.\n- **Unique Weekly Visitors**: The number of unique users who visited this workflow weekly.\n- **Unique Monthly Visitors**: The number of unique users who visited this workflow monthly.\n- **Unique Weekly Inserters**: The number of unique users who inserted this workflow weekly.\n- **Unique Monthly Inserters**: The number of unique users who inserted this workflow monthly.\n- **Why It’s Popular**: Explain what makes this workflow stand out (e.g., innovative features, ease of use, specific use cases).\n\n## Community Analysis\n- Analyze why these workflows are popular and valued by the n8n community.\n- Discuss any trends, patterns, or feedback that highlight their significance.\n\n## Additional Insights\n- If available, provide extra information about the contributor's overall impact, such as their engagement in community forums or other notable contributions.\n\n## Formatting Guidelines\n- Use Markdown formatting exclusively (headers, lists, and tables) for clarity and organization.\n- Ensure your response is concise yet comprehensive, structured for easy navigation.\n\n## Error Handling\n- If data is unavailable or incomplete, clearly state this in your response and suggest possible reasons or next steps.\n\n## TOOLS\n\n### n8n_creator_stats \n- Use this tool to retrieve detailed statistics about the n8n creator.\n\n\n \n"
+        }
+      },
+      "id": "31cf5299-0f09-4758-b70f-f2f8e6fbe496",
+      "name": "n8n Creator Stats Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -1056,
+        240
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=C:\\\\Users\\\\joe\\Downloads\\\\{{ $binary.data.fileName }}-{{ $now.format('yyyy-MM-dd-hh-mm-ss') }}.md",
+        "options": {
+          "append": true
+        }
+      },
+      "id": "3ee46ec5-b3f7-4050-8420-ac05ee828438",
+      "name": "Save creator-summary.md",
+      "type": "n8n-nodes-base.readWriteFile",
+      "position": [
+        -256,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c44ee9a7-e640-4f5e-acbe-ec559868b74c",
+              "name": "output",
+              "type": "string",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ea27daea-d2d9-4d35-854a-fbedd60b29b9",
+      "name": "Summary Report",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -464,
+        624
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent for n8n Creator Leaderboard Stats\nhttps://github.com/teds-tech-talks/n8n-community-leaderboard",
+        "height": 320,
+        "width": 620,
+        "color": 6
+      },
+      "id": "964dfa84-9d58-4421-8808-b79828af3630",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1248,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Tool Call for n8n Creators Stats",
+        "height": 280,
+        "width": 260
+      },
+      "id": "c967ab17-9840-427d-a48d-826b29aef5e1",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -880,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Local or Cloud LLM",
+        "height": 460,
+        "width": 300,
+        "color": 5
+      },
+      "id": "8c1ae9a2-45c4-46b2-9c5c-2ff05b5d6aa3",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1504,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "68dcf390-a4b7-4606-993c-51e07ae4799d",
+      "name": "Ollama Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "position": [
+        -1408,
+        784
+      ],
+      "typeVersion": 1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Save n8n Creator Report Locally\n(optional for local install)",
+        "height": 320,
+        "width": 540,
+        "color": 7
+      },
+      "id": "f35e24c5-c607-40d1-9034-d5e458b8f924",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Summary Report Response",
+        "height": 340,
+        "width": 320,
+        "color": 4
+      },
+      "id": "c7095c81-2fa5-43ef-b05a-ae87ea4463c7",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Global Workflow Variables\n\n",
+        "height": 320,
+        "width": 300
+      },
+      "id": "a8636f34-0499-4880-9746-cc300cc306d5",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1200,
+        1360
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Daily n8n Leaderboard Stats\nhttps://github.com/teds-tech-talks/n8n-community-leaderboard\n\n### n8n Leaderboard\nhttps://teds-tech-talks.github.io/n8n-community-leaderboard/",
+        "height": 640,
+        "width": 780,
+        "color": 3
+      },
+      "id": "343a4759-7dc2-42c2-b7c6-2cfd828831b2",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1248,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## n8n Creators Stats",
+        "height": 300,
+        "width": 1120,
+        "color": 6
+      },
+      "id": "551c1a80-5a7e-4d53-9d71-6d9eef0a3f15",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## n8n Workflow Stats",
+        "height": 300,
+        "width": 1120,
+        "color": 4
+      },
+      "id": "d982c52d-3bc5-4753-93b4-52863e4efdb0",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        1472
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "02b02023-c5a2-4e22-bcf9-2284c434f5d3",
+              "name": "name",
+              "type": "string",
+              "value": "={{ $json.user.name }}"
+            },
+            {
+              "id": "4582435b-3c76-45e7-a251-12055efa890a",
+              "name": "username",
+              "type": "string",
+              "value": "={{ $json.user.username }}"
+            },
+            {
+              "id": "b713a971-ce29-43cf-8f42-c426a38c6582",
+              "name": "bio",
+              "type": "string",
+              "value": "={{ $json.user.bio }}"
+            },
+            {
+              "id": "19a06510-802e-4bd5-9552-7afa7355ff92",
+              "name": "sum_unique_weekly_inserters",
+              "type": "number",
+              "value": "={{ $json.sum_unique_weekly_inserters }}"
+            },
+            {
+              "id": "e436533a-5170-47c2-809b-7d79502eb009",
+              "name": "sum_unique_monthly_inserters",
+              "type": "number",
+              "value": "={{ $json.sum_unique_monthly_inserters }}"
+            },
+            {
+              "id": "198fef5d-86b8-4009-b187-6d3e6566d137",
+              "name": "sum_unique_inserters",
+              "type": "number",
+              "value": "={{ $json.sum_unique_inserters }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c927aef4-0341-4717-b7a5-0820b4130afb",
+      "name": "Creators Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        512,
+        1232
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3bc3cd11-904d-4315-974d-262c0bd5fea7",
+              "name": "template_url",
+              "type": "string",
+              "value": "={{ $json.template_url }}"
+            },
+            {
+              "id": "c846c523-f077-40cd-b548-32460124ffb9",
+              "name": "wf_detais.name",
+              "type": "string",
+              "value": "={{ $json.wf_detais.name }}"
+            },
+            {
+              "id": "f330de47-56fb-4657-8a30-5f5e5cfa76d7",
+              "name": "wf_detais.createdAt",
+              "type": "string",
+              "value": "={{ $json.wf_detais.createdAt }}"
+            },
+            {
+              "id": "f7ed7e51-a7cf-4f2e-8819-f33115c5ad51",
+              "name": "wf_detais.description",
+              "type": "string",
+              "value": "={{ $json.wf_detais.description }}"
+            },
+            {
+              "id": "02b02023-c5a2-4e22-bcf9-2284c434f5d3",
+              "name": "name",
+              "type": "string",
+              "value": "={{ $json.user.name }}"
+            },
+            {
+              "id": "4582435b-3c76-45e7-a251-12055efa890a",
+              "name": "username",
+              "type": "string",
+              "value": "={{ $json.user.username }}"
+            },
+            {
+              "id": "f952cad3-7e62-46b7-aeb7-a5cbf4d46c0d",
+              "name": "unique_weekly_inserters",
+              "type": "number",
+              "value": "={{ $json.unique_weekly_inserters }}"
+            },
+            {
+              "id": "6123302b-5bda-48f4-9ef2-71ff52a5f3ba",
+              "name": "unique_monthly_inserters",
+              "type": "number",
+              "value": "={{ $json.unique_monthly_inserters }}"
+            },
+            {
+              "id": "92dca169-e03f-42ad-8790-ebb55c1a7272",
+              "name": "unique_weekly_visitors",
+              "type": "number",
+              "value": "={{ $json.unique_weekly_visitors }}"
+            },
+            {
+              "id": "ee640389-d396-4d65-8110-836372a51fb0",
+              "name": "unique_monthly_visitors",
+              "type": "number",
+              "value": "={{ $json.unique_monthly_visitors }}"
+            },
+            {
+              "id": "9f1c5599-3672-4f4e-9742-d7cc564f6714",
+              "name": "user.avatar",
+              "type": "string",
+              "value": "={{ $json.user.avatar }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cef3b311-882d-4f78-b414-828749a71918",
+      "name": "Workflows Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        512,
+        1568
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "username",
+        "joinMode": "enrichInput1",
+        "options": {}
+      },
+      "id": "dea6c8e2-da8c-404f-9b8a-ec0596e29fb4",
+      "name": "Merge Creators & Workflows",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        800,
+        1568
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "content": "## Filter by n8n Creator Username",
+        "height": 320,
+        "width": 480
+      },
+      "id": "c087ef65-e22d-4bb5-8866-dd1b6225567a",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        1808
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "06288ba7-4525-4e91-afe3-3f488910b784",
+      "name": "Split Out Creators",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -128,
+        1232
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "b033625c-529a-47cf-89b6-d74f2f600422",
+      "name": "Split Out Workflows",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -128,
+        1568
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "sum_unique_weekly_inserters",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e71901f7-0a2d-4b69-bacd-acdaddd318ba",
+      "name": "Sort By Top Weekly Creator Inserts",
+      "type": "n8n-nodes-base.sort",
+      "position": [
+        80,
+        1232
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "unique_weekly_inserters",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c82dc792-556b-41e1-8154-c6c0396efde5",
+      "name": "Sort By Top Weekly Workflow Inserts",
+      "type": "n8n-nodes-base.sort",
+      "position": [
+        80,
+        1568
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "maxItems": 300
+      },
+      "id": "63708058-f6c7-41de-b658-66b7b3550bc2",
+      "name": "Take Top 300 Workflows",
+      "type": "n8n-nodes-base.limit",
+      "position": [
+        304,
+        1568
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Workflow for n8n Creators Stats",
+        "height": 1120,
+        "width": 2510,
+        "color": 7
+      },
+      "id": "381dba69-0b8d-4c62-aba1-c466cd38c1d3",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1504,
+        1040
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## GET n8n Stats from GitHub repo",
+        "height": 560,
+        "width": 280,
+        "color": 7
+      },
+      "id": "8065cdcc-a45a-4415-8da6-3484a4d20736",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -784,
+        1168
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# n8n Creators Leaderboard Stats Workflow\n\n## Overview\nThis workflow aggregates and processes data from the n8n community to generate detailed statistics about creators and their workflows. It fetches information from JSON files stored on GitHub, merges creator and workflow data, filters the results based on a specified username, and uses an AI agent to output a comprehensive Markdown report.\n\n## Data Retrieval\n- **Creators Data**: \n - An HTTP Request node (\"stats_aggregate_creators\") retrieves a JSON file containing aggregated statistics for workflow creators. \n- **Workflows Data**: \n - A separate HTTP Request node (\"stats_aggregate_workflows\") pulls a JSON file with detailed workflow metrics such as visitor counts and inserter statistics. \n- **Global Variables**: \n - A global variable is set with the GitHub repository base URL housing these JSON files, ensuring that the correct data source is used.\n\n## Data Processing and Merging\n- **Parsing the Data**: \n - The \"Parse Creators Data\" and \"Parse Workflow Data\" nodes extract JSON arrays from the retrieved files for further processing. \n- **Limiting and Sorting**: \n - Nodes like \"Take Top 25 Creators\" and \"Take Top 300 Workflows\" limit the result sets, while nodes such as \"Sort By Top Weekly Creator Inserts\" and \"Sort By Top Weekly Workflow Inserts\" sort the data based on performance metrics. \n- **Merging Records**: \n - Data from creators and workflows is merged by matching the username, enriching the dataset with combined statistics for each creator.\n\n## Filtering and Report Generation\n- **Username Filtering**: \n - A filter node (\"Filter By Creator Username\") allows the workflow to focus on a single creator based on the input username (e.g., \"joe\"). \n- **Generating the Markdown Report**: \n - An AI agent node (\"gpt-4o-mini\") processes the filtered data using a predefined prompt. This prompt instructs the agent to produce a detailed Markdown report that includes: \n - An overall summary of the creator’s workflows \n - A Markdown table listing each workflow along with key metrics (unique weekly/monthly visitors and inserters) and a brief explanation of its popularity \n - Insights into trends or community feedback related to the workflows \n- **Output Conversion and Saving**: \n - The resulting text is converted into a file (using the \"creator-summary\" node) and then saved locally with a filename that includes a timestamp, ensuring easy tracking and retrieval\n",
+        "height": 1000,
+        "width": 1000,
+        "color": 2
+      },
+      "id": "3a36aa3f-b946-4811-9c42-640efd673f83",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "c32c3c93-d2b5-45d6-9c4e-43a344d1d021",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        -1088,
+        608
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "content": "## Chat History Memory",
+        "height": 280,
+        "width": 280,
+        "color": 3
+      },
+      "id": "7972bd02-6d59-452b-971f-52a3d539fd7a",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1184,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Quick Start Guide for the n8n Creators Leaderboard Workflow\n\n## Prerequisites\n- Ensure your n8n instance is running.\n- Verify that the GitHub base URL and file variables (for creators and workflows) are correctly set in the Global Variables node.\n- Confirm that your OpenAI credentials are configured for the AI Agent node.\n\n## How to Start the Workflow\n- **Activate the Workflow:** \n Ensure the workflow is active in your n8n environment.\n\n- **Trigger via Chat:** \n The workflow is initiated by the Chat Trigger node. Send a chat message such as: \n `show me stats for username [desired_username]` \n This input provides the required username for filtering.\n\n- **Processing & Report Generation:** \n Once triggered, the workflow fetches aggregated creator and workflow data from GitHub, processes and merges the information, and then uses the AI Agent to generate a Markdown report.\n\n- **Output:** \n The final Markdown report is saved locally as a file (with a timestamp), which you can review to see detailed leaderboard statistics and insights for the specified creator.\n\n## Summary\nBy sending a chat message with the appropriate username command, you can quickly trigger this workflow, which will then fetch, process, and generate dynamic statistics about n8n community creators. Enjoy exploring your community’s leaderboard data!\n",
+        "height": 980,
+        "width": 480
+      },
+      "id": "059a1075-6198-4d9f-a2fc-69b5d64660c1",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2016,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# Why Use the n8n Creators Leaderboard Workflow?\n\n## Benefits\nThis workflow provides valuable insights into the n8n community by analyzing and presenting detailed statistics about workflow creators and their contributions. It helps users to:\n\n- **Discover Popular Workflows**: Identify the most widely used workflows based on unique visitors and inserters, both weekly and monthly.\n- **Understand Community Trends**: Gain insights into what types of workflows are resonating with the community, enabling better decision-making for creating or improving workflows.\n- **Recognize Top Contributors**: Highlight the most active and impactful creators, fostering collaboration and inspiration within the community.\n- **Save Time with Automation**: Automates data retrieval, processing, and report generation, eliminating manual effort.\n\n## Key Features\n- **Data Aggregation**: Fetches creator and workflow statistics from GitHub repositories.\n- **Custom Filtering**: Allows filtering by specific usernames to focus on individual contributors.\n- **AI-Powered Reports**: Generates comprehensive Markdown reports with detailed summaries, tables, and community analysis.\n- **Output Flexibility**: Saves reports locally for easy access and future reference.\n\n## Use Cases\n- **For Workflow Creators**: Monitor performance metrics of your workflows to understand their impact and optimize them for better engagement.\n- **For Community Managers**: Recognize top contributors and trends to encourage participation and improve community resources.\n- **For New Users**: Explore popular workflows as a starting point for building your own automations.\n\n",
+        "height": 940,
+        "width": 480
+      },
+      "id": "b00c26e0-d5eb-4d73-83bd-37797e98e788",
+      "name": "Sticky Note15",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2016,
+        1040
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": {
+            "username": "joe"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Workflow Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "n8n Creator Stats Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creators Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Creators & Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "n8n Creator Stats Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflows Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Creators & Workflows",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "creator-summary": {
+      "main": [
+        [
+          {
+            "node": "Save creator-summary.md",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Variables": {
+      "main": [
+        [
+          {
+            "node": "stats_aggregate_creators",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "stats_aggregate_workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Creators": {
+      "main": [
+        [
+          {
+            "node": "Sort By Top Weekly Creator Inserts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Creators Data": {
+      "main": [
+        [
+          {
+            "node": "Split Out Creators",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Workflow Data": {
+      "main": [
+        [
+          {
+            "node": "Split Out Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Workflows": {
+      "main": [
+        [
+          {
+            "node": "Sort By Top Weekly Workflow Inserts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Top 25 Creators": {
+      "main": [
+        [
+          {
+            "node": "Creators Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "n8n Creator Stats Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Take Top 300 Workflows": {
+      "main": [
+        [
+          {
+            "node": "Workflows Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Creator Stats Agent": {
+      "main": [
+        [
+          {
+            "node": "Summary Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "creator-summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "stats_aggregate_creators": {
+      "main": [
+        [
+          {
+            "node": "Parse Creators Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "stats_aggregate_workflows": {
+      "main": [
+        [
+          {
+            "node": "Parse Workflow Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter By Creator Username": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Creators & Workflows": {
+      "main": [
+        [
+          {
+            "node": "Filter By Creator Username",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "n8n Creator Stats Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Global Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort By Top Weekly Creator Inserts": {
+      "main": [
+        [
+          {
+            "node": "Take Top 25 Creators",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort By Top Weekly Workflow Inserts": {
+      "main": [
+        [
+          {
+            "node": "Take Top 300 Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "25705cff-422e-420f-99c6-7dce2fbbd6e4",
+  "meta": {
+    "instanceId": "5484ff8886008941223f906d261ce002f9cd4a716f89f4cd3384770ee616c550"
+  },
+  "id": "F7STwNkiFgtRuSCu",
+  "tags": []
+}
