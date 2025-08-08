@@ -1,5 +1,5 @@
 {
-  "name": "Agent creators",
+  "name": "1511-ai-agent-for-n8n-creators",
   "nodes": [
     {
       "parameters": {
@@ -353,7 +353,7 @@
     },
     {
       "parameters": {
-        "content": "## AI Agent for n8n Creator Leaderboard Stats\nhttps://github.com/teds-tech-talks/n8n-community-leaderboard",
+        "content": "Estadísticas de la tabla de clasificación de creadores del agente de IA para n8n\nhttps://github.com/teds-tech-talks/n8n-community-leaderboard",
         "height": 320,
         "width": 620,
         "color": 6
@@ -369,7 +369,7 @@
     },
     {
       "parameters": {
-        "content": "## Tool Call for n8n Creators Stats",
+        "content": "### Convocatoria de herramientas para las estadísticas de los creadores de n8n",
         "height": 280,
         "width": 260
       },
@@ -384,7 +384,7 @@
     },
     {
       "parameters": {
-        "content": "## Local or Cloud LLM",
+        "content": "## LLM local o en la nube",
         "height": 460,
         "width": 300,
         "color": 5
@@ -414,7 +414,7 @@
     },
     {
       "parameters": {
-        "content": "## Save n8n Creator Report Locally\n(optional for local install)",
+        "content": "Guardar el informe del creador de n8n localmente (opcional para la instalación local)",
         "height": 320,
         "width": 540,
         "color": 7
@@ -430,7 +430,7 @@
     },
     {
       "parameters": {
-        "content": "## Summary Report Response",
+        "content": "## Respuesta del informe resumido",
         "height": 340,
         "width": 320,
         "color": 4
@@ -446,7 +446,7 @@
     },
     {
       "parameters": {
-        "content": "## Global Workflow Variables\n\n",
+        "content": "## Variables de flujo de trabajo global",
         "height": 320,
         "width": 300
       },
@@ -461,7 +461,7 @@
     },
     {
       "parameters": {
-        "content": "## Daily n8n Leaderboard Stats\nhttps://github.com/teds-tech-talks/n8n-community-leaderboard\n\n### n8n Leaderboard\nhttps://teds-tech-talks.github.io/n8n-community-leaderboard/",
+        "content": "## Estadísticas diarias de la clasificación de n8n\nhttps://github.com/teds-tech-talks/n8n-community-leaderboard\n\n### Clasificación de n8n\nhttps://teds-tech-talks.github.io/n8n-community-leaderboard/",
         "height": 640,
         "width": 780,
         "color": 3
@@ -477,7 +477,7 @@
     },
     {
       "parameters": {
-        "content": "## n8n Creators Stats",
+        "content": "## Estadísticas de creadores de n8n",
         "height": 300,
         "width": 1120,
         "color": 6
@@ -493,7 +493,7 @@
     },
     {
       "parameters": {
-        "content": "## n8n Workflow Stats",
+        "content": "## n8n Estadísticas del flujo de trabajo",
         "height": 300,
         "width": 1120,
         "color": 4
@@ -661,7 +661,7 @@
     },
     {
       "parameters": {
-        "content": "## Filter by n8n Creator Username",
+        "content": "## Filtrar por nombre de usuario del creador n8n",
         "height": 320,
         "width": 480
       },
@@ -775,7 +775,7 @@
     },
     {
       "parameters": {
-        "content": "## GET n8n Stats from GitHub repo",
+        "content": "## OBTENER estadísticas n8n del repositorio de GitHub",
         "height": 560,
         "width": 280,
         "color": 7
@@ -791,7 +791,7 @@
     },
     {
       "parameters": {
-        "content": "# n8n Creators Leaderboard Stats Workflow\n\n## Overview\nThis workflow aggregates and processes data from the n8n community to generate detailed statistics about creators and their workflows. It fetches information from JSON files stored on GitHub, merges creator and workflow data, filters the results based on a specified username, and uses an AI agent to output a comprehensive Markdown report.\n\n## Data Retrieval\n- **Creators Data**: \n - An HTTP Request node (\"stats_aggregate_creators\") retrieves a JSON file containing aggregated statistics for workflow creators. \n- **Workflows Data**: \n - A separate HTTP Request node (\"stats_aggregate_workflows\") pulls a JSON file with detailed workflow metrics such as visitor counts and inserter statistics. \n- **Global Variables**: \n - A global variable is set with the GitHub repository base URL housing these JSON files, ensuring that the correct data source is used.\n\n## Data Processing and Merging\n- **Parsing the Data**: \n - The \"Parse Creators Data\" and \"Parse Workflow Data\" nodes extract JSON arrays from the retrieved files for further processing. \n- **Limiting and Sorting**: \n - Nodes like \"Take Top 25 Creators\" and \"Take Top 300 Workflows\" limit the result sets, while nodes such as \"Sort By Top Weekly Creator Inserts\" and \"Sort By Top Weekly Workflow Inserts\" sort the data based on performance metrics. \n- **Merging Records**: \n - Data from creators and workflows is merged by matching the username, enriching the dataset with combined statistics for each creator.\n\n## Filtering and Report Generation\n- **Username Filtering**: \n - A filter node (\"Filter By Creator Username\") allows the workflow to focus on a single creator based on the input username (e.g., \"joe\"). \n- **Generating the Markdown Report**: \n - An AI agent node (\"gpt-4o-mini\") processes the filtered data using a predefined prompt. This prompt instructs the agent to produce a detailed Markdown report that includes: \n - An overall summary of the creator’s workflows \n - A Markdown table listing each workflow along with key metrics (unique weekly/monthly visitors and inserters) and a brief explanation of its popularity \n - Insights into trends or community feedback related to the workflows \n- **Output Conversion and Saving**: \n - The resulting text is converted into a file (using the \"creator-summary\" node) and then saved locally with a filename that includes a timestamp, ensuring easy tracking and retrieval\n",
+        "content": "# Flujo de trabajo de estadísticas de la tabla de clasificación de creadores de n8n\n\n## Resumen\nEste flujo de trabajo agrega y procesa datos de la comunidad n8n para generar estadísticas detalladas sobre los creadores y sus flujos de trabajo. Obtiene información de archivos JSON almacenados en GitHub, fusiona los datos de los creadores y los flujos de trabajo, filtra los resultados según un nombre de usuario específico y utiliza un agente de IA para generar un informe completo en Markdown.\n\n## Recuperación de datos\n- **Datos de los creadores**:\n- Un nodo de solicitud HTTP (\"stats_aggregate_creators\") recupera un archivo JSON con estadísticas agregadas de los creadores de flujos de trabajo.\n- **Datos de los flujos de trabajo**:\n- Un nodo de solicitud HTTP independiente (\"stats_aggregate_workflows\") extrae un archivo JSON con métricas detalladas del flujo de trabajo, como el número de visitantes y las estadísticas de inserción.\n- **Variables globales**:\n- Se establece una variable global con la URL base del repositorio de GitHub que contiene estos archivos JSON, lo que garantiza que se utilice la fuente de datos correcta.\n\n## Procesamiento y fusión de datos\n- **Análisis de datos**:\n- Los nodos \"Analizar datos de creadores\" y \"Analizar datos de flujo de trabajo\" extraen matrices JSON de los archivos recuperados para su posterior procesamiento.\n- **Limitar y ordenar**:\n- Nodos como \"Tomar los 25 mejores creadores\" y \"Tomar los 300 mejores flujos de trabajo\" limitan los conjuntos de resultados, mientras que nodos como \"Ordenar por las principales inserciones semanales de creadores\" y \"Ordenar por las principales inserciones semanales de flujo de trabajo\" ordenan los datos según las métricas de rendimiento.\n- **Fusionar registros**:\n- Los datos de creadores y flujos de trabajo se fusionan al coincidir con el nombre de usuario, lo que enriquece el conjunto de datos con estadísticas combinadas de cada creador.\n\n## Filtrado y generación de informes\n- **Filtrado por nombre de usuario**:\n- Un nodo de filtro (\"Filtrar por nombre de usuario del creador\") permite que el flujo de trabajo se centre en un solo creador según el nombre de usuario introducido (p. ej., \"joe\"). **Generación del informe de Markdown**:\n- Un nodo de agente de IA (\"gpt-4o-mini\") procesa los datos filtrados mediante una solicitud predefinida. Esta solicitud indica al agente que genere un informe detallado de Markdown que incluye:\n- Un resumen general de los flujos de trabajo del creador.\n- Una tabla de Markdown que enumera cada flujo de trabajo junto con las métricas clave (visitantes únicos semanales/mensuales e insertadores) y una breve explicación de su popularidad.\n- Información sobre tendencias o comentarios de la comunidad relacionados con los flujos de trabajo.\n- **Conversión y guardado de resultados**:\n- El texto resultante se convierte en un archivo (mediante el nodo \"creator-summary\") y se guarda localmente con un nombre de archivo que incluye una marca de tiempo, lo que facilita su seguimiento y recuperación.",
         "height": 1000,
         "width": 1000,
         "color": 2
@@ -818,7 +818,7 @@
     },
     {
       "parameters": {
-        "content": "## Chat History Memory",
+        "content": "## Memoria del historial de chat",
         "height": 280,
         "width": 280,
         "color": 3
@@ -834,7 +834,7 @@
     },
     {
       "parameters": {
-        "content": "# Quick Start Guide for the n8n Creators Leaderboard Workflow\n\n## Prerequisites\n- Ensure your n8n instance is running.\n- Verify that the GitHub base URL and file variables (for creators and workflows) are correctly set in the Global Variables node.\n- Confirm that your OpenAI credentials are configured for the AI Agent node.\n\n## How to Start the Workflow\n- **Activate the Workflow:** \n Ensure the workflow is active in your n8n environment.\n\n- **Trigger via Chat:** \n The workflow is initiated by the Chat Trigger node. Send a chat message such as: \n `show me stats for username [desired_username]` \n This input provides the required username for filtering.\n\n- **Processing & Report Generation:** \n Once triggered, the workflow fetches aggregated creator and workflow data from GitHub, processes and merges the information, and then uses the AI Agent to generate a Markdown report.\n\n- **Output:** \n The final Markdown report is saved locally as a file (with a timestamp), which you can review to see detailed leaderboard statistics and insights for the specified creator.\n\n## Summary\nBy sending a chat message with the appropriate username command, you can quickly trigger this workflow, which will then fetch, process, and generate dynamic statistics about n8n community creators. Enjoy exploring your community’s leaderboard data!\n",
+        "content": "# Guía de inicio rápido para el flujo de trabajo de la tabla de clasificación de creadores de n8n\n\n## Requisitos previos\n- Asegúrate de que tu instancia de n8n esté en ejecución.\n- Verifica que la URL base de GitHub y las variables de archivo (para creadores y flujos de trabajo) estén configuradas correctamente en el nodo \"Variables globales\".\n- Confirma que tus credenciales de OpenAI estén configuradas para el nodo \"Agente de IA\".\n\n## Cómo iniciar el flujo de trabajo\n- **Activar el flujo de trabajo:**\n\nAsegúrate de que el flujo de trabajo esté activo en tu entorno de n8n.\n\n- **Activar mediante chat:**\n\nEl flujo de trabajo se inicia mediante el nodo \"Activador de chat\". Envía un mensaje de chat como:\n`show me stats for username [desired_username]`\n\nEsta entrada proporciona el nombre de usuario necesario para el filtrado.\n\n- **Procesamiento y generación de informes:**\nUna vez activado, el flujo de trabajo obtiene datos agregados del creador y del flujo de trabajo desde GitHub, procesa y fusiona la información, y luego utiliza el Agente de IA para generar un informe de Markdown.\n\n- **Resultado:**\nEl informe final de Markdown se guarda localmente como un archivo (con marca de tiempo), que puedes revisar para ver estadísticas detalladas de la clasificación e información del creador especificado.\n\n## Resumen\nAl enviar un mensaje de chat con el comando de nombre de usuario correspondiente, puedes activar rápidamente este flujo de trabajo, que obtendrá, procesará y generará estadísticas dinámicas sobre los creadores de la comunidad n8n. ¡Disfruta explorando los datos de la clasificación de tu comunidad!",
         "height": 980,
         "width": 480
       },
@@ -849,7 +849,7 @@
     },
     {
       "parameters": {
-        "content": "# Why Use the n8n Creators Leaderboard Workflow?\n\n## Benefits\nThis workflow provides valuable insights into the n8n community by analyzing and presenting detailed statistics about workflow creators and their contributions. It helps users to:\n\n- **Discover Popular Workflows**: Identify the most widely used workflows based on unique visitors and inserters, both weekly and monthly.\n- **Understand Community Trends**: Gain insights into what types of workflows are resonating with the community, enabling better decision-making for creating or improving workflows.\n- **Recognize Top Contributors**: Highlight the most active and impactful creators, fostering collaboration and inspiration within the community.\n- **Save Time with Automation**: Automates data retrieval, processing, and report generation, eliminating manual effort.\n\n## Key Features\n- **Data Aggregation**: Fetches creator and workflow statistics from GitHub repositories.\n- **Custom Filtering**: Allows filtering by specific usernames to focus on individual contributors.\n- **AI-Powered Reports**: Generates comprehensive Markdown reports with detailed summaries, tables, and community analysis.\n- **Output Flexibility**: Saves reports locally for easy access and future reference.\n\n## Use Cases\n- **For Workflow Creators**: Monitor performance metrics of your workflows to understand their impact and optimize them for better engagement.\n- **For Community Managers**: Recognize top contributors and trends to encourage participation and improve community resources.\n- **For New Users**: Explore popular workflows as a starting point for building your own automations.\n\n",
+        "content": "# ¿Por qué usar el flujo de trabajo de la tabla de clasificación de creadores de n8n?\n\n## Beneficios\nEste flujo de trabajo proporciona información valiosa sobre la comunidad n8n mediante el análisis y la presentación de estadísticas detalladas sobre los creadores de flujos de trabajo y sus contribuciones. Ayuda a los usuarios a:\n\n- **Descubrir flujos de trabajo populares**: Identificar los flujos de trabajo más utilizados según los visitantes únicos y las personas que insertan contenido, tanto semanales como mensuales.\n- **Comprender las tendencias de la comunidad**: Obtener información sobre los tipos de flujos de trabajo que tienen mayor impacto en la comunidad, lo que permite una mejor toma de decisiones para crear o mejorar flujos de trabajo.\n- **Reconocer a los principales colaboradores**: Destacar a los creadores más activos e influyentes, fomentando la colaboración y la inspiración dentro de la comunidad.\n- **Ahorrar tiempo con la automatización**: Automatiza la recuperación, el procesamiento y la generación de informes de datos, eliminando el esfuerzo manual.\n\n## Características clave\n- **Agregación de datos**: Obtiene estadísticas de creadores y flujos de trabajo de los repositorios de GitHub. - **Filtro personalizado**: Permite filtrar por nombre de usuario específico para centrarse en colaboradores individuales.\n- **Informes con IA**: Genera informes completos en Markdown con resúmenes detallados, tablas y análisis de la comunidad.\n- **Flexibilidad de salida**: Guarda los informes localmente para facilitar el acceso y futuras consultas.\n\n## Casos de uso\n- **Para creadores de flujos de trabajo**: Supervisa las métricas de rendimiento de tus flujos de trabajo para comprender su impacto y optimizarlos para una mayor interacción.\n- **Para gestores de comunidad**: Reconoce a los principales colaboradores y tendencias para fomentar la participación y mejorar los recursos de la comunidad.\n- **Para nuevos usuarios**: Explora flujos de trabajo populares como punto de partida para crear tus propias automatizaciones.",
         "height": 940,
         "width": 480
       },
@@ -861,6 +861,33 @@
         1040
       ],
       "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### Soy una nota\n**Haz doble clic** para editarme. [Guía](https://docs.n8n.io/workflows/sticky-notes/)",
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        1648
+      ],
+      "typeVersion": 1,
+      "id": "18b7ef9f-248f-4b6f-80d9-5bf64d20f760",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "## Soy una nota\n**Haz doble clic** para editarme. [Guía](https://docs.n8n.io/workflows/sticky-notes/)"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        1648
+      ],
+      "id": "66e63aa9-6e51-43d4-8518-1c47b5810b75",
+      "name": "Sticky Note18"
     }
   ],
   "pinData": {
@@ -1143,7 +1170,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "25705cff-422e-420f-99c6-7dce2fbbd6e4",
+  "versionId": "106de700-9532-4e4c-a945-9208e0db77de",
   "meta": {
     "instanceId": "5484ff8886008941223f906d261ce002f9cd4a716f89f4cd3384770ee616c550"
   },

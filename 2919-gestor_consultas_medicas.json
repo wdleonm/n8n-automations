@@ -1,20 +1,7 @@
 {
-  "id": "6LeAm5UyENgTdwkv",
-  "meta": {
-    "instanceId": "6d46e25379ef430a7067964d1096b885c773564549240cb3ad4c087f6cf94bd3",
-    "templateCredsSetupCompleted": true
-  },
-  "name": "agente",
-  "tags": [],
+  "name": "2919-gestor_consultas_medicas",
   "nodes": [
     {
-      "id": "84ce6905-4416-4721-8627-f8c303730a4f",
-      "name": "OpenAI Chat Model1",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        8260,
-        2260
-      ],
       "parameters": {
         "model": {
           "__rl": true,
@@ -24,39 +11,33 @@
         },
         "options": {}
       },
-      "credentials": {
-        "openAiApi": {
-          "id": "zUnIUrOWA279vAoC",
-          "name": "OpenAi account"
-        }
-      },
+      "id": "823a8a66-3055-4181-a5be-dfbd5a692ab8",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        3312,
+        432
+      ],
       "typeVersion": 1.2
     },
     {
-      "id": "a6e9358a-a873-49f3-af38-21ca545b2bfc",
-      "name": "Assistente clinica interno",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "position": [
-        8380,
-        2020
-      ],
       "parameters": {
+        "promptType": "define",
         "text": "={{ $json.message.text }}",
         "options": {
           "systemMessage": "=Hoje é {{$now}}\nPAPEL:  \nVocê é um assistente interno de reagendamento na clínica, acionado diretamente por um profissional via Telegram para gerenciar situações de remarcação de consultas ou incluir lembretes na lista de compras.\n\nOBJETIVO GERAL:  \n1. Reagendar consultas a pedido do profissional.  \n2. Adicionar lembretes na lista de compras quando solicitado.  \n\nRESUMO DE RESPONSABILIDADES:  \n1. Reagendamento de pacientes  \n   - Acesse o Google Calendar por meio da ferramenta \"MCP Google Calendar\" para identificar as consultas afetadas.  \n   - Extraia o número de telefone na descrição do evento.  \n   - Use a ferramenta \"Reagendar no WhatsApp\" para enviar mensagens de reagendamento aos pacientes.  \n   - Lembre-se de que você apenas envia a mensagem; a resposta do paciente é tratada por outro agente.  \n\n2. Lista de compras da clínica  \n   - Se o profissional solicitar pelo Telegram a inclusão de um item na lista de compras, utilize a ferramenta \"Google Tasks\" para adicionar o lembrete.  \n\nORIENTAÇÕES DE LINGUAGEM E PROCEDIMENTO:  \n- Use uma abordagem empática, profissional e acolhedora.  \n- Nunca envie mensagens para pacientes sem autorização explícita do profissional.  \n- Quando listar eventos ou tarefas, seja objetivo e organizado.  \n- Mantenha clareza e concisão em todas as interações.  \n\nFERRAMENTAS DISPONÍVEIS:  \n- Reagendar no WhatsApp  \n- Google Tasks  \n- MCP Google Calendar  \n\nINSTRUÇÕES FINAIS:  \n- Atenda exclusivamente às solicitações de reagendamento e inclusão de lembretes.  \n- A remarcação de consultas ocorre somente quando o profissional pede, utilizando o MCP Google Calendar para identificar os pacientes e o \"Reagendar no WhatsApp\" para enviar a mensagem.  \n- Para a lista de compras, sempre registre no \"Google Tasks\".  \n"
-        },
-        "promptType": "define"
+        }
       },
+      "id": "7cc1b98a-cb9e-46c5-99f7-9d0c634e2981",
+      "name": "Assistente clinica interno",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        3424,
+        192
+      ],
       "typeVersion": 1.8
     },
     {
-      "id": "d674fb31-cf45-47ac-b33b-4abe1920e352",
-      "name": "Google Tasks",
-      "type": "n8n-nodes-base.googleTasksTool",
-      "position": [
-        8720,
-        2320
-      ],
       "parameters": {
         "task": "bDQ5ZlNVV2lPQ3pYT3NsNA",
         "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
@@ -65,79 +46,61 @@
           "status": "needsAction"
         }
       },
-      "credentials": {
-        "googleTasksOAuth2Api": {
-          "id": "3SQEwHb0AR81JO8y",
-          "name": "Google Tasks account"
-        }
-      },
+      "id": "73f5dfef-07fc-4bcc-b1c5-23cd5427c818",
+      "name": "Google Tasks",
+      "type": "n8n-nodes-base.googleTasksTool",
+      "position": [
+        3760,
+        480
+      ],
       "typeVersion": 1
     },
     {
-      "id": "dff00a3c-6496-4104-afc4-a0556f3cabfa",
-      "name": "MCP Google Calendar",
-      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
-      "position": [
-        8560,
-        2320
-      ],
       "parameters": {
         "sseEndpoint": "https://engaging-seahorse-19.rshare.io/mcp/ceb17fa5-1937-405f-8000-ea3be7d2b032/mcp/:tool/calendar/sse"
       },
+      "id": "2589f941-ac01-45d3-83a7-2528adc4dd39",
+      "name": "MCP Google Calendar",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "position": [
+        3600,
+        480
+      ],
       "typeVersion": 1
     },
     {
-      "id": "10a0bda3-94b3-487a-98a1-1e7badcc8775",
-      "name": "Receber Mensagem Telegram",
-      "type": "n8n-nodes-base.telegramTrigger",
-      "position": [
-        8100,
-        2020
-      ],
-      "webhookId": "f2b29356-d5d3-4f5d-9ef1-273001c0a820",
       "parameters": {
         "updates": [
           "message"
         ],
         "additionalFields": {}
       },
-      "credentials": {
-        "telegramApi": {
-          "id": "TAVUHrFXuDIMInWe",
-          "name": "Telegram account"
-        }
-      },
+      "id": "8747e33d-3823-415b-bb14-ea06c5318832",
+      "name": "Receber Mensagem Telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        3152,
+        192
+      ],
+      "webhookId": "f2b29356-d5d3-4f5d-9ef1-273001c0a820",
       "typeVersion": 1.2
     },
     {
-      "id": "46cfa6be-f896-4e33-be3d-b4ef676c043b",
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "100",
+        "contextWindowLength": 10
+      },
+      "id": "af75fd63-aee4-439d-9376-806d2c1cde4a",
       "name": "Postgres Chat Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "position": [
-        8420,
-        2300
+        3472,
+        464
       ],
-      "parameters": {
-        "sessionKey": "100",
-        "sessionIdType": "customKey",
-        "contextWindowLength": 10
-      },
-      "credentials": {
-        "postgres": {
-          "id": "t8gw5Kie6Oxy5TcK",
-          "name": "Postgres account"
-        }
-      },
       "typeVersion": 1.3
     },
     {
-      "id": "c79c44f6-94fa-4e56-9d94-49185f83bfb4",
-      "name": "OpenAI Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        5860,
-        3980
-      ],
       "parameters": {
         "model": {
           "__rl": true,
@@ -147,63 +110,51 @@
         },
         "options": {}
       },
-      "credentials": {
-        "openAiApi": {
-          "id": "zUnIUrOWA279vAoC",
-          "name": "OpenAi account"
-        }
-      },
+      "id": "43dae816-e610-42a2-8592-775e896089a4",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        912,
+        2144
+      ],
       "typeVersion": 1.2
     },
     {
-      "id": "5e7ac239-6ba1-414c-b11d-d637361e8f77",
-      "name": "Assistente Clínica",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "position": [
-        5960,
-        3760
-      ],
       "parameters": {
+        "promptType": "define",
         "text": "={{ $json.text }}{{ $json.output}}",
         "options": {
           "systemMessage": "=HOJE É: {{ $now }}\nCONTATO DA CLÍNICA: \n{ coloque o seu contato aqui }\n\nINSTRUÇÃO IMPORTANTE:\n\nAo criar ou editar qualquer evento via MCP_CALENDAR, inclua na descrição do agendamento:\n\nTelefone do paciente\n\nNome completo\n\nData de nascimento\n\nInformações adicionais (convênio, condição de saúde etc.)\n\nPAPEL:\nVocê é uma atendente do WhatsApp da Clínica Moreira, especializada em atendimento humanizado. Sua missão:\n\nAtender pacientes de forma ágil e eficiente\n\nResponder dúvidas sobre clínica e serviços\n\nAgendar, remarcar e cancelar consultas pelo MCP_CALENDAR\n\nPERSONALIDADE E TOM DE VOZ:\n\nSimpática, acolhedora e respeitosa\n\nFormal, sem emojis ou gírias\n\nFERRAMENTAS DISPONÍVEIS:\n\nMCP_CALENDAR (trigger /mcp/:tool/calendar)\n\nAVALIABILITY_CALENDAR: verifica horários livres entre Start_Time e End_Time\n\nGET_ALL_CALENDAR: lista todos os eventos entre After e Before\n\nCREATE_CALENDAR: cria novo evento com start, end e Description (inclua sempre telefone, nome e data de nascimento)\n\nUPDATE_CALENDAR: atualiza campos de um evento existente (Event_ID)\n\nDELETE_CALENDAR: remove evento (Event_ID)\n\nGET_CALENDAR: obtém detalhes de um evento específico (Event_ID)\n\nCallToHuman (workflow id A95kslcW4H82nJuR)\n\nEncaminha atendimento humano via EvolutionAPI em n8n\n\nDisparar IMEDIATAMENTE quando:\n\nUrgência ou mal-estar grave\n\nPedido de diagnóstico/opinião médica\n\nInsatisfação expressa do paciente\n\nAssuntos fora do escopo da clínica\n\nExemplo de chamada:\n\n{\n  \"tool\": \"CallToHuman\",\n  \"telefone\": \"<telefone>\",\n  \"nome\": \"<nome completo>\",\n  \"ultima_mensagem\": \"<texto da última mensagem>\"\n}\n\nEnviar telegram cancelamento\n\nApós DELETE_CALENDAR, envie ao gestor via Telegram: nome, data, hora\n\nSOP (Fluxo de Atendimento):\n\nInício e coleta de dados\n\nCumprimente e informe o link da agenda: https://calendar.google.com/calendar/embed?src=a57a3781407f42b1ad7fe24ce76f558dc6c86fea5f349b7fd39747a2294c1654%40group.calendar.google.com&ctz=America%2FArgentina%2FBuenos_Aires\n\nPeça: nome completo, data de nascimento e confirme o telefone\n number: {{ $('Webhook1').item.json.body.data.key.remoteJid.replaceAll(\"@s.whatsapp.net\",\"\") }}\n\nVerificação de disponibilidade\n\nPergunte data e turno preferidos\n\nChame AVALIABILITY_CALENDAR com Start_Time 08:00 e End_Time 19:00 (ou turno)\n\nInforme horários livres\n\nAgendamento\n\nApós escolha do paciente, use CREATE_CALENDAR com start, end e Description\n\nAguarde retorno para confirmar criação antes de responder\n\nRemarcação\n\nSolicite dados e nova preferência de data/turno\n\nLocalize evento antigo via GET_ALL_CALENDAR\n\nUse DELETE_CALENDAR no Event_ID antigo\n\nCrie novo com CREATE_CALENDAR\n\nConfirme após sucesso\n\nCancelamento\n\nSolicite dados do paciente\n\nIdentifique Event_ID via GET_ALL_CALENDAR ou GET_CALENDAR\n\nExecute DELETE_CALENDAR\n\nUse Enviar telegram cancelamento\n\nConfirme cancelamento ao paciente\n\nConfirmação de consulta (follow-up)\n\nSe paciente responder “Confirmar, ID”: use UPDATE_CALENDAR para prefixar título com [Confirmado]\n\nSe “Reagendar, ID”: DELETE_CALENDAR e oriente para usar link da agenda\n\nREGRAS DE ESCALONAMENTO:\n\nUse CallToHuman IMEDIATAMENTE em situações de:\n\nUrgência/mal-estar\n\nPedidos de diagnóstico/opinião médica\n\nInsatisfação ou reclamações\n\nAssuntos fora do escopo\n\nMANTENHA SEMPRE:\n\nTom profissional e respeitoso\n\nLinguagem clara e objetiva\n\nAgendamentos apenas em datas futuras\n\nNunca confirmar sem retorno do MCP_CALENDAR\n\nHORÁRIOS DE FUNCIONAMENTO:\n\nSeg–Sáb: 08h–19h | Dom e feriados: fechado\n\nLOCALIZAÇÃO:\nRua Rio Casca, 417 – Belo Horizonte, MG\n\nLINK DA AGENDA:\nhttps://calendar.google.com/calendar/embed?src=a57a3781407f42b1ad7fe24ce76f558dc6c86fea5f349b7fd39747a2294c1654%40group.calendar.google.com&ctz=America%2FArgentina%2FBuenos_Aires\n\n"
-        },
-        "promptType": "define"
+        }
       },
+      "id": "3f944a89-9e3a-4a48-80cb-b51f242bb368",
+      "name": "Assistente Clínica",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1008,
+        1920
+      ],
       "retryOnFail": true,
       "typeVersion": 1.8,
       "waitBetweenTries": 1000
     },
     {
-      "id": "2f0a6ea1-7654-4ae7-884e-d5b8ff47d4f9",
+      "parameters": {
+        "chatId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chat_ID', ``, 'string') }}",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "id": "205c0b86-6c2a-46e0-a622-ce0b4b5860b8",
       "name": "Enviar alerta de cancelamento",
       "type": "n8n-nodes-base.telegramTool",
       "position": [
-        6400,
-        3980
+        1440,
+        2144
       ],
       "webhookId": "d045a8c1-ec1b-4d20-8226-457aa18934af",
-      "parameters": {
-        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
-        "chatId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chat_ID', ``, 'string') }}",
-        "additionalFields": {}
-      },
-      "credentials": {
-        "telegramApi": {
-          "id": "TAVUHrFXuDIMInWe",
-          "name": "Telegram account"
-        }
-      },
       "typeVersion": 1.2
     },
     {
-      "id": "8ddaa14f-7d2f-4364-8ff7-f87e0a428e37",
-      "name": "Gatilho diário",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "position": [
-        8060,
-        2780
-      ],
       "parameters": {
         "rule": {
           "interval": [
@@ -214,218 +165,199 @@
           ]
         }
       },
+      "id": "0e040280-06ff-4d1c-820a-d17a1c467629",
+      "name": "Gatilho diário",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        3104,
+        944
+      ],
       "typeVersion": 1.2
     },
     {
-      "id": "0784753d-123d-4259-abcc-8abf39e7fc07",
-      "name": "Assistente de confirmação",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "position": [
-        8280,
-        2680
-      ],
       "parameters": {
+        "promptType": "define",
         "text": "=Hoje é {{ $now }}. Você é um agente especializado em **confirmação de consultas** para a clínica. Sua função principal é:\n\n1. **Listar os eventos** agendados para o próximo dia no MCP Calendar.\n2. **Obter o numero** na descrição de cada evento.\n3. **Enviar uma mensagem de confirmação** usando a ferramenta “relembraAGENDAMENTO”, perguntando se o paciente confirma a consulta ou prefere reagendar.\n\nImportante:\n- Você **não recebe respostas** diretamente; o retorno do paciente é tratado por outro agente.\n\n",
         "options": {
           "systemMessage": ""
-        },
-        "promptType": "define"
+        }
       },
+      "id": "ac88b609-9697-4f91-ba69-99e9e0871cfd",
+      "name": "Assistente de confirmação",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        3328,
+        848
+      ],
       "typeVersion": 1.8
     },
     {
-      "id": "afa90e86-0f44-4069-976b-ca302b0d828a",
-      "name": "AI Agent",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "position": [
-        5840,
-        4460
-      ],
       "parameters": {
+        "promptType": "define",
         "text": "={{ $json.output }}",
         "options": {
           "systemMessage": "=Você é especialista em formatação de mensagem para whataspp, trabalhando somente na formatação e não alterando o conteúdo da menssagem.\n\n- Substitua ** por *\n- Remova #"
-        },
-        "promptType": "define"
+        }
       },
+      "id": "bb5f7678-4f23-4d7c-b810-460d36e9547b",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        880,
+        2624
+      ],
       "typeVersion": 1.8
     },
     {
-      "id": "13179a70-85b6-4e18-8736-eb2cdd252591",
+      "parameters": {
+        "content": "# \"Asistente de Confirmación de Citas\"\nDescripción:\n\nPropósito:\nEsta sección contiene la configuración del Asistente de Confirmación de Citas, un agente especializado en confirmar citas programadas con pacientes.\n\nInstrucciones de uso:\n\nSe activa automáticamente todos los días laborables (de lunes a viernes) a las 8:00 a. m. mediante el disparador diario (Gatilho diário).\n\nEl agente recupera todas las citas programadas para el día siguiente mediante MCP Google Calendar.\n\nExtrae el número de teléfono de cada paciente del campo de descripción del evento.\n\nSe envía un mensaje de confirmación a cada paciente mediante la herramienta relembraAGENDAMENTO, solicitando confirmación o reprogramación.\n\nImportante: Este agente no gestiona las respuestas de los pacientes; otro agente o flujo de trabajo se encarga del seguimiento.\n\nAsegúrese de que las descripciones de los eventos en Google Calendar estén correctamente completadas para evitar errores.",
+        "height": 600,
+        "width": 1940,
+        "color": 5
+      },
+      "id": "71f051a5-10db-4d0e-9ce1-dadaf0bd89c4",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        6960,
-        2580
+        2000,
+        752
       ],
-      "parameters": {
-        "color": 5,
-        "width": 1940,
-        "height": 600,
-        "content": "# \"Appointment Confirmation Assistant\"\nDescription:\n\nPurpose:\nThis section contains the configuration for the Appointment Confirmation Assistant, an agent specialized in confirming scheduled appointments with patients.\n\nInstructions for Use:\n\nIt is triggered automatically every weekday (Monday to Friday) at 08:00 AM via the Daily Trigger (Gatilho diário).\n\nThe agent retrieves all appointments scheduled for the next day using MCP Google Calendar.\n\nIt extracts each patient's phone number from the event description field.\n\nA confirmation message is sent to each patient using the relembraAGENDAMENTO tool, asking for confirmation or rescheduling.\n\nImportant: This agent does not handle responses from patients; another agent or workflow is responsible for follow-ups.\n\nMake sure event descriptions in Google Calendar are correctly filled to avoid errors.\n\n"
-      },
       "typeVersion": 1
     },
     {
-      "id": "4111432b-2ddc-4e96-ba6d-d25e003e2688",
+      "parameters": {
+        "content": "# \"Agent Core Components (Tools, MCP, Memory, LLM Model)\"\nDescription:\n\nPurpose:\n\nThis sticky note represents the essential structure of any intelligent agent: it includes access to external tools,\n persistent memory, the MCP system for calendar management, and a Language Model (LLM) to process natural language tasks.\n\nInstructions for Use:\n\nLanguage Model nodes (OpenAI, OpenRouter) are responsible for natural language understanding and generation.\n\nMemory nodes (Postgres Chat Memory) maintain conversation context over multiple interactions.\n\nMCP Tools interact with Google Calendar and other services to perform real-world actions.\n\nAlways ensure memory synchronization between the agent's context and actions performed.\n\nIf new tools are added, they must be connected both to the agent and properly described in the system message.\n\n",
+        "height": 640,
+        "width": 1780,
+        "color": 3
+      },
+      "id": "7b1c5db5-7660-47da-8024-df1f3a95b785",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4760,
-        3620
+        -208,
+        1792
       ],
-      "parameters": {
-        "color": 3,
-        "width": 1780,
-        "height": 640,
-        "content": "# \"Agent Core Components (Tools, MCP, Memory, LLM Model)\"\nDescription:\n\nPurpose:\n\nThis sticky note represents the essential structure of any intelligent agent: it includes access to external tools,\n persistent memory, the MCP system for calendar management, and a Language Model (LLM) to process natural language tasks.\n\nInstructions for Use:\n\nLanguage Model nodes (OpenAI, OpenRouter) are responsible for natural language understanding and generation.\n\nMemory nodes (Postgres Chat Memory) maintain conversation context over multiple interactions.\n\nMCP Tools interact with Google Calendar and other services to perform real-world actions.\n\nAlways ensure memory synchronization between the agent's context and actions performed.\n\nIf new tools are added, they must be connected both to the agent and properly described in the system message.\n\n"
-      },
       "typeVersion": 1
     },
     {
-      "id": "4b59f903-07c2-4e66-9ea1-0727beb0d85c",
+      "parameters": {
+        "content": "# \"Procesamiento y envío de respuestas de WhatsApp\"\nDescripción:\n\nPropósito:\nEsta sección se encarga de procesar, formatear y enviar los mensajes salientes de WhatsApp a los pacientes a través de la API de Evolution.\n\nInstrucciones de uso:\n\nEl nodo del Agente de IA reformatea primero los mensajes recibidos del agente asistente para que cumplan con la sintaxis Markdown de WhatsApp (por ejemplo, reemplazando **negrita** por *negrita*).\n\nUna vez formateados, los mensajes se reenvían a WhatsApp mediante el nodo de la API de Evolution2.\n\nAsegúrese de formatear correctamente antes de enviarlos para mantener un tono de comunicación profesional y evitar errores de entrega.\n\nCualquier mejora futura en el procesamiento de textos debe implementarse aquí.",
+        "height": 640,
+        "width": 1800,
+        "color": 4
+      },
+      "id": "fe4b4f68-8f3b-4e00-9a10-ce99a8b3a543",
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4640,
-        4300
+        -320,
+        2464
       ],
-      "parameters": {
-        "color": 4,
-        "width": 1800,
-        "height": 640,
-        "content": "# \"Processing and Sending WhatsApp Responses\"\nDescription:\n\nPurpose:\nThis section is responsible for processing, formatting, and sending outbound WhatsApp messages to patients through the Evolution API.\n\nInstructions for Use:\n\nMessages received from the assistant agent are first reformatted by the AI Agent node to comply with WhatsApp markdown syntax (e.g., replacing **bold** with *bold*).\n\nOnce formatted, the messages are forwarded to WhatsApp using the Evolution API2 node.\n\nEnsure proper formatting before sending to maintain a professional communication tone and avoid delivery errors.\n\nAny future text-processing improvements should be implemented here."
-      },
       "typeVersion": 1
     },
     {
-      "id": "274f7f66-7613-4e9e-868d-a5705156dde6",
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "= {{ $('Webhook1').item.json.body.data.key.id }}",
+        "contextWindowLength": 50
+      },
+      "id": "282d0fad-9f2c-4c50-a4b8-6cc0dcacf2e2",
       "name": "Postgres Chat Memory1",
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "position": [
-        6000,
-        3980
+        1040,
+        2144
       ],
-      "parameters": {
-        "sessionKey": "= {{ $('Webhook1').item.json.body.data.key.id }}",
-        "sessionIdType": "customKey",
-        "contextWindowLength": 50
-      },
-      "credentials": {
-        "postgres": {
-          "id": "t8gw5Kie6Oxy5TcK",
-          "name": "Postgres account"
-        }
-      },
       "typeVersion": 1.3
     },
     {
-      "id": "654ed617-df1a-48db-b9bc-833b2c1ecb80",
+      "parameters": {
+        "sseEndpoint": "https://engaging-seahorse-19.rshare.io/mcp/ceb17fa5-1937-405f-8000-ea3be7d2b032/mcp/:tool/calendar/sse"
+      },
+      "id": "f32599b8-8798-4400-a3a8-2c7360dd55b9",
       "name": "MCP Google Calendar2",
       "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
       "position": [
-        6120,
-        3980
+        1168,
+        2144
       ],
-      "parameters": {
-        "sseEndpoint": "https://engaging-seahorse-19.rshare.io/mcp/ceb17fa5-1937-405f-8000-ea3be7d2b032/mcp/:tool/calendar/sse"
-      },
       "typeVersion": 1
     },
     {
-      "id": "b11aeec6-b446-4c02-a0b0-7f9239628df3",
-      "name": "MCP GMAIL",
-      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
-      "position": [
-        8540,
-        3000
-      ],
       "parameters": {
         "sseEndpoint": "https://engaging-seahorse-19.rshare.io/mcp/82a7a338-618c-44f5-a1c3-f2e32b6b4833/mcp/:tool/gmail/sse"
       },
+      "id": "c7d5c914-c3cf-4b06-a37c-858d40067f8e",
+      "name": "MCP GMAIL",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "position": [
+        3584,
+        1168
+      ],
       "typeVersion": 1
     },
     {
-      "id": "f5a38b34-499e-4bbc-9282-ce5f4a3b85a3",
-      "name": "MCP CALENDAR",
-      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
-      "position": [
-        8380,
-        3000
-      ],
       "parameters": {
         "sseEndpoint": "https://engaging-seahorse-19.rshare.io/mcp/ceb17fa5-1937-405f-8000-ea3be7d2b032/mcp/:tool/calendar/sse"
       },
+      "id": "e36fbc49-ff66-4498-b73a-2318e84bfafa",
+      "name": "MCP CALENDAR",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "position": [
+        3424,
+        1168
+      ],
       "typeVersion": 1
     },
     {
-      "id": "cd6a6147-fd18-4cd4-8aab-fcb454ab76b7",
+      "parameters": {
+        "chatId": "={{ $('Receber Mensagem Telegram').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "a4abb9ad-5d63-4c75-ad44-b787043c59ae",
       "name": "Telegram",
       "type": "n8n-nodes-base.telegram",
       "position": [
-        8740,
-        2020
+        3792,
+        192
       ],
       "webhookId": "5bba05fc-2859-4225-aa85-7c4bc5ff532d",
-      "parameters": {
-        "text": "={{ $json.output }}",
-        "chatId": "={{ $('Receber Mensagem Telegram').item.json.message.chat.id }}",
-        "additionalFields": {}
-      },
-      "credentials": {
-        "telegramApi": {
-          "id": "TAVUHrFXuDIMInWe",
-          "name": "Telegram account"
-        }
-      },
       "typeVersion": 1.2
     },
     {
-      "id": "900b8c1a-f987-4898-9fc1-bfc673773e06",
-      "name": "OpenRouter Chat Model1",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
-      "position": [
-        5760,
-        4680
-      ],
       "parameters": {
         "model": "google/gemini-2.0-flash-exp:free",
         "options": {}
       },
-      "credentials": {
-        "openRouterApi": {
-          "id": "eGPA8rbskZCfFPBn",
-          "name": "OpenRouter account"
-        }
-      },
+      "id": "eee07817-39e5-4e36-8c8f-dad5a6f4fe23",
+      "name": "OpenRouter Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "position": [
+        800,
+        2848
+      ],
       "typeVersion": 1
     },
     {
-      "id": "1584b448-d8f5-4bab-ad9a-9b07edb8e102",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolutionAPIKORE",
+        "options": {}
+      },
+      "id": "387014bb-56e6-4125-b1dd-3f247b494a17",
       "name": "Webhook1",
       "type": "n8n-nodes-base.webhook",
       "position": [
-        5760,
-        2100
+        800,
+        272
       ],
       "webhookId": "405dab7c-a0ea-4f5b-a6cc-ede9d5ba78a0",
-      "parameters": {
-        "path": "evolutionAPIKORE",
-        "options": {},
-        "httpMethod": "POST"
-      },
       "typeVersion": 2
     },
     {
-      "id": "74b5179f-502c-45d6-88e9-2c2d492603cd",
-      "name": "Edit Fields1",
-      "type": "n8n-nodes-base.set",
-      "position": [
-        6000,
-        2100
-      ],
       "parameters": {
-        "options": {},
         "assignments": {
           "assignments": [
             {
@@ -477,23 +409,23 @@
               "value": "={{ $json.body.data.message.documentMessage.url }}"
             }
           ]
-        }
+        },
+        "options": {}
       },
+      "id": "d4a9ce31-8b24-4c56-96b7-d4b460bd0462",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1040,
+        272
+      ],
       "typeVersion": 3.4
     },
     {
-      "id": "ce22f5bc-f0e1-463d-9b9a-5112f8d91f00",
-      "name": "Switch",
-      "type": "n8n-nodes-base.switch",
-      "position": [
-        6240,
-        2080
-      ],
       "parameters": {
         "rules": {
           "values": [
             {
-              "outputKey": "text",
               "conditions": {
                 "options": {
                   "version": 2,
@@ -515,10 +447,10 @@
                   }
                 ]
               },
-              "renameOutput": true
+              "renameOutput": true,
+              "outputKey": "text"
             },
             {
-              "outputKey": "image",
               "conditions": {
                 "options": {
                   "version": 2,
@@ -540,10 +472,10 @@
                   }
                 ]
               },
-              "renameOutput": true
+              "renameOutput": true,
+              "outputKey": "image"
             },
             {
-              "outputKey": "audio",
               "conditions": {
                 "options": {
                   "version": 2,
@@ -565,10 +497,10 @@
                   }
                 ]
               },
-              "renameOutput": true
+              "renameOutput": true,
+              "outputKey": "audio"
             },
             {
-              "outputKey": "document",
               "conditions": {
                 "options": {
                   "version": 2,
@@ -590,241 +522,212 @@
                   }
                 ]
               },
-              "renameOutput": true
+              "renameOutput": true,
+              "outputKey": "document"
             }
           ]
         },
         "options": {}
       },
+      "id": "45596bf8-272a-4acb-936e-c2d96a9398a2",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        1280,
+        240
+      ],
       "typeVersion": 3.2
     },
     {
-      "id": "c78ee758-fb71-4a4f-9450-0ffcd67a2af2",
+      "parameters": {
+        "content": "# Gestión de Webhooks y Tipos de Mensajes Entrantes de WhatsApp\nDescripción:\n\nPropósito:\nGestiona la recepción inicial y la clasificación de los mensajes entrantes de WhatsApp de los pacientes a través del sistema de webhooks.\n\nInstrucciones de uso:\n\nEl nodo Webhook1 captura los mensajes entrantes.\n\nEditar Campos1 extrae campos estructurados como texto, URL de imagen, URL de audio y URL de documento.\n\nEl nodo Cambiar analiza el tipo de contenido recibido y dirige el flujo según corresponda:\n\nTexto → Reenviado al asistente para su gestión.\n\nImagen → Enviado para análisis de OCR.\n\nAudio → Enviado para transcripción.\n\nDocumento → (Actualmente sin usar, pero listo para futuros flujos de trabajo).\n\nMantenga las credenciales de los webhooks actualizadas para garantizar la fiabilidad del sistema.",
+        "height": 640,
+        "width": 1580,
+        "color": 6
+      },
+      "id": "f338defd-746e-41ce-8347-95d45703479b",
       "name": "Sticky Note5",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4960,
-        1840
+        0,
+        0
       ],
-      "parameters": {
-        "color": 6,
-        "width": 1580,
-        "height": 640,
-        "content": "# Incoming WhatsApp Webhook and Message Type Handling\"\nDescription:\n\nPurpose:\nManages the initial reception and classification of incoming WhatsApp messages from patients via the webhook system.\n\nInstructions for Use:\n\nThe Webhook1 node captures incoming messages.\n\nEdit Fields1 extracts structured fields such as text, image URL, audio URL, and document URL.\n\nSwitch node analyzes which type of content was received and directs the flow accordingly:\n\nText → Forwarded to the assistant for handling.\n\nImage → Sent for OCR analysis.\n\nAudio → Sent for transcription.\n\nDocument → (Currently unused, but ready for future workflows).\n\nKeep webhook credentials updated to ensure system reliability.\n\n"
-      },
       "typeVersion": 1
     },
     {
-      "id": "83abbf61-91e2-4d1c-a42a-4f05b18583e7",
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "id": "3314f96f-137f-4ca8-8137-fabfb1e318a5",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        6380,
-        3260
+        1424,
+        1424
       ],
-      "parameters": {
-        "options": {},
-        "resource": "audio",
-        "operation": "transcribe",
-        "binaryPropertyName": "=data"
-      },
-      "credentials": {
-        "openAiApi": {
-          "id": "zUnIUrOWA279vAoC",
-          "name": "OpenAi account"
-        }
-      },
       "typeVersion": 1.8
     },
     {
-      "id": "4c2dcefc-fb65-42ca-8c63-8636f2906654",
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "={{ $('Webhook1').item.json.body.instance }}",
+        "messageId": "={{ $json.key_id }}",
+        "convertToMp4": true
+      },
+      "id": "32963303-c386-4dff-af11-a5cffcf5382d",
       "name": "Evolution API",
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "position": [
-        5860,
-        3260
+        912,
+        1424
       ],
-      "parameters": {
-        "resource": "chat-api",
-        "messageId": "={{ $json.key_id }}",
-        "operation": "get-media-base64",
-        "convertToMp4": true,
-        "instanceName": "={{ $('Webhook1').item.json.body.instance }}"
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "fPKdX0EITLV8HI89",
-          "name": "Evolution account"
-        }
-      },
       "typeVersion": 1
     },
     {
-      "id": "85909834-7564-478b-bce8-0c3fe7bf4159",
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {}
+      },
+      "id": "41cfcc48-4aa8-4a89-9c48-f7a5f1d1019b",
       "name": "Convert to File",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        6100,
-        3260
+        1152,
+        1424
       ],
-      "parameters": {
-        "options": {},
-        "operation": "toBinary",
-        "sourceProperty": "data.base64"
-      },
       "typeVersion": 1.1
     },
     {
-      "id": "3e200157-fbcc-4225-b982-2dfaea54cc23",
+      "parameters": {
+        "content": "## \"Descargar audio y convertir a MP4\"\nDescripción:\n\nPropósito:\nGestiona la recuperación, conversión y transcripción de archivos de audio enviados por pacientes por WhatsApp.\n\nInstrucciones de uso:\n\nLa API Evolution descarga el audio en formato base64.\n\nConvertir a archivo transforma el formato base64 en un archivo binario compatible con los motores de transcripción.\n\nLa API OpenAI Whisper (a través del nodo OpenAI) transcribe el audio a texto, preparándolo para el procesamiento del lenguaje natural.\n\nAsegúrese de que los formatos de audio se gestionen correctamente (p. ej., MP4/MP3) para evitar errores de conversión o transcripción.\n\nSupervise posibles problemas con archivos de gran tamaño (>25 MB) que puedan afectar el rendimiento.",
+        "height": 480,
+        "width": 1760
+      },
+      "id": "bbfb7c4c-1a3e-431f-9e1d-a8446eebf202",
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4980,
-        3100
+        32,
+        1264
       ],
-      "parameters": {
-        "width": 1760,
-        "height": 480,
-        "content": "## \"Download Audio and Convert to MP4\"\nDescription:\n\nPurpose:\nHandles retrieval, conversion, and transcription of audio files sent by patients via WhatsApp.\n\nInstructions for Use:\n\nEvolution API downloads the audio in base64 format.\n\nConvert to File transforms base64 into a binary file compatible with transcription engines.\n\nOpenAI Whisper API (via OpenAI node) transcribes the audio into text, preparing it for natural language processing.\n\nEnsure audio formats are correctly handled (e.g., MP4/MP3) to avoid conversion or transcription failures.\n\nMonitor for potential heavy file size issues (>25MB) which may impact performance."
-      },
       "typeVersion": 1
     },
     {
-      "id": "5862d5f1-2df4-40ee-881f-a6d6e302602f",
+      "parameters": {
+        "content": "# \"Extraer texto de imágenes\"\nDescripción:\n\nPropósito:\nProcesa imágenes recibidas por WhatsApp para extraer texto (OCR) y describir su contenido visual para un posterior análisis contextual.\n\nInstrucciones de uso:\n\nEl nodo OpenAI1 utiliza un modelo de visión para transcribir y describir cualquier texto o escena de las imágenes entrantes.\n\nLos datos resultantes son interpretados por el Agente de IA2, que prepara información y recomienda las respuestas adecuadas.\n\nLa extracción de imagen a texto es especialmente útil para gestionar recetas, notas o documentos médicos enviados por los pacientes.\n\nMantenga los estándares de calidad: las imágenes deben ser nítidas y de alta resolución para obtener los mejores resultados de transcripción.",
+        "height": 480,
+        "width": 1820
+      },
+      "id": "3521a7f9-2c66-403f-a932-69b0b7dda917",
       "name": "Sticky Note6",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4920,
-        2540
+        -48,
+        704
       ],
-      "parameters": {
-        "width": 1820,
-        "height": 480,
-        "content": "# \"Extract Text from Images\"\nDescription:\n\nPurpose:\nProcesses images received via WhatsApp to extract text (OCR) and describe their visual content for further contextual analysis.\n\nInstructions for Use:\n\nThe OpenAI1 node uses a Vision model to transcribe and describe any text or scene from incoming images.\n\nThe resulting data is interpreted by the AI Agent2, which prepares insights and recommends appropriate responses.\n\nImage-to-text extraction is especially useful for handling prescriptions, notes, or medical documents sent by patients.\n\nMaintain quality standards: images must be clear and high-resolution for best transcription results."
-      },
       "typeVersion": 1
     },
     {
-      "id": "8dbd4e6d-8b38-44d8-ba45-5cac2713f6ca",
-      "name": "OpenAI1",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "position": [
-        5980,
-        2620
-      ],
       "parameters": {
-        "text": "TRANSCRIBE OS TEXTOS e describe a imagem",
+        "resource": "image",
+        "operation": "analyze",
         "modelId": {
           "__rl": true,
           "mode": "list",
           "value": "chatgpt-4o-latest",
           "cachedResultName": "CHATGPT-4O-LATEST"
         },
-        "options": {},
-        "resource": "image",
+        "text": "TRANSCRIBE OS TEXTOS e describe a imagem",
         "imageUrls": "={{ $json.image }}",
-        "operation": "analyze"
+        "options": {}
       },
-      "credentials": {
-        "openAiApi": {
-          "id": "zUnIUrOWA279vAoC",
-          "name": "OpenAi account"
-        }
-      },
+      "id": "794b7c12-82ec-4b86-9777-5c355da3fafd",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1024,
+        784
+      ],
       "typeVersion": 1.8
     },
     {
-      "id": "19e8d50d-4f87-408e-96f0-236932c1d120",
-      "name": "AI Agent2",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "position": [
-        6200,
-        2620
-      ],
       "parameters": {
+        "promptType": "define",
         "text": "={{$json.output}}",
         "options": {
           "systemMessage": "voce e encarregado de analizar o texto proveniente do analisis de uma iamgem ela pode conter texto, a ideia e que voce explique ao proximo agente como debe responder as mensagens"
-        },
-        "promptType": "define"
+        }
       },
+      "id": "f75decc5-dd49-4b92-9f57-400e2cd60856",
+      "name": "AI Agent2",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1248,
+        784
+      ],
       "typeVersion": 1.9
     },
     {
-      "id": "0d2f9842-b011-49f5-9594-24a917dee60e",
-      "name": "OpenRouter Chat Model2",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
-      "position": [
-        6100,
-        2860
-      ],
       "parameters": {
         "model": "google/gemini-2.5-pro-exp-03-25:free",
         "options": {}
       },
-      "credentials": {
-        "openRouterApi": {
-          "id": "eGPA8rbskZCfFPBn",
-          "name": "OpenRouter account"
-        }
-      },
+      "id": "725f9d88-84ff-42bb-89db-8381e7c6adf0",
+      "name": "OpenRouter Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "position": [
+        1152,
+        1024
+      ],
       "typeVersion": 1
     },
     {
-      "id": "58f7f9c7-6f86-40ff-bfad-5467e5b3a9e4",
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Webhook1').item.json.body.instance }}",
+        "remoteJid": "={{ $('Webhook1').item.json.body.data.key.remoteJid }}",
+        "messageText": "={{$json.output}}",
+        "options_message": {}
+      },
+      "id": "ab735ba9-3305-4d88-b1d8-aec59b8166ba",
       "name": "Evolution API2",
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "position": [
-        6200,
-        4460
+        1248,
+        2624
       ],
-      "parameters": {
-        "resource": "messages-api",
-        "remoteJid": "={{ $('Webhook1').item.json.body.data.key.remoteJid }}",
-        "messageText": "={{$json.output}}",
-        "instanceName": "={{ $('Webhook1').item.json.body.instance }}",
-        "options_message": {}
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "fPKdX0EITLV8HI89",
-          "name": "Evolution account"
-        }
-      },
       "typeVersion": 1
     },
     {
-      "id": "2b529ab1-2a7e-44e0-b7c8-ed05e07c6def",
+      "parameters": {
+        "content": "## \"Asistente Interno de la Clínica\"\nDescripción:\n\nPropósito:\nRepresenta al Asistente Interno de la clínica, utilizado exclusivamente por el equipo interno a través de Telegram para gestionar la reprogramación de citas de pacientes y la lista de recordatorios de compras.\n\nInstrucciones de uso:\n\nSe activa mediante mensajes del personal enviados a través de Telegram.\n\nTareas de reprogramación:\n\nAcceda al Calendario de Google de MCP para localizar y gestionar citas.\n\nExtraiga la información de contacto del paciente de la descripción del evento.\n\nEnvíe mensajes de reprogramación a través de WhatsApp con la herramienta dedicada.\n\nTareas de la lista de la compra:\n\nInserte recordatorios de la lista de la compra en Google Tasks según las instrucciones del personal.\n\nMantenga siempre un tono profesional y empático al interactuar con los pacientes, incluso si la comunicación es indirecta.\n\nEvite el contacto directo no autorizado con los pacientes sin el permiso del personal.",
+        "height": 680,
+        "width": 1960
+      },
+      "id": "2ecbb352-ccf6-4ef3-9bab-6f448244f579",
       "name": "Sticky Note4",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        6960,
-        1840
+        2000,
+        0
       ],
-      "parameters": {
-        "width": 1960,
-        "height": 680,
-        "content": "## \"Internal Clinic Assistant\"\nDescription:\n\nPurpose:\nRepresents the Internal Assistant for the clinic, used exclusively by the internal team via Telegram to manage patient rescheduling and manage a purchasing reminder list.\n\nInstructions for Use:\n\nTriggered by staff messages sent via Telegram.\n\nRescheduling tasks:\n\nAccess the MCP Google Calendar to locate and manage appointments.\n\nExtract patient contact from the event description.\n\nSend rescheduling messages through WhatsApp using the dedicated tool.\n\nShopping list tasks:\n\nInsert shopping list reminders into Google Tasks based on the staff's instructions.\n\nAlways maintain professional and empathetic tone when interacting with patients, even if the communication is indirect.\n\nAvoid unauthorized direct patient contact without staff permission."
-      },
       "typeVersion": 1
     },
     {
-      "id": "a4a51bd1-48a6-4e32-b696-0ae77a0e05fe",
-      "name": "CallToHuman",
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "position": [
-        6240,
-        4000
-      ],
       "parameters": {
         "name": "escalar_humano",
+        "description": "=Use essa ferramenta ao perceber que o paciente fala de:\n- Situações urgentes (sentindo-se mal, etc.)\n- Assuntos não relacionados à clínica\n- Insatisfação extrema ou pedidos de falar com um humano\n",
         "workflowId": {
           "__rl": true,
           "mode": "list",
           "value": "A95kslcW4H82nJuR",
           "cachedResultName": "callToHuman"
         },
-        "description": "=Use essa ferramenta ao perceber que o paciente fala de:\n- Situações urgentes (sentindo-se mal, etc.)\n- Assuntos não relacionados à clínica\n- Insatisfação extrema ou pedidos de falar com um humano\n",
         "workflowInputs": {
           "value": {
             "nome": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('nome', ``, 'string') }}",
@@ -866,16 +769,16 @@
           "convertFieldsToString": false
         }
       },
+      "id": "238577bb-c7b1-4006-8911-b2e94555f10b",
+      "name": "CallToHuman",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "position": [
+        1280,
+        2160
+      ],
       "typeVersion": 2.1
     },
     {
-      "id": "674c5c75-a954-4306-8a02-71bdda89293c",
-      "name": "OpenAI Chat Model2",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        8260,
-        2840
-      ],
       "parameters": {
         "model": {
           "__rl": true,
@@ -885,39 +788,33 @@
         },
         "options": {}
       },
-      "credentials": {
-        "openAiApi": {
-          "id": "zUnIUrOWA279vAoC",
-          "name": "OpenAi account"
-        }
-      },
+      "id": "82630568-0c0b-4663-bf1d-8ee078e15ee6",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        3312,
+        1008
+      ],
       "typeVersion": 1.2
     },
     {
-      "id": "b398627e-2fbe-44e4-ac2f-523b03871eda",
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "instance name",
+        "remoteJid": "5511111111111@s.whatsapp.net",
+        "messageText": "={{$fromAI(\"reminder\")}}",
+        "options_message": {}
+      },
+      "id": "c4bb5ba9-95d0-4da1-866d-d2a4b4f175ad",
       "name": "REMINDER",
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "position": [
-        8640,
-        2700
+        3680,
+        864
       ],
-      "parameters": {
-        "resource": "messages-api",
-        "remoteJid": "5511111111111@s.whatsapp.net",
-        "messageText": "={{$fromAI(\"reminder\")}}",
-        "instanceName": "instance name",
-        "options_message": {}
-      },
-      "credentials": {
-        "evolutionApi": {
-          "id": "fPKdX0EITLV8HI89",
-          "name": "Evolution account"
-        }
-      },
       "typeVersion": 1
     }
   ],
-  "active": false,
   "pinData": {
     "Webhook1": [
       {
@@ -998,10 +895,6 @@
       }
     ]
   },
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "3044ad5c-d14e-4562-a454-0ad87f26dc68",
   "connections": {
     "OpenAI": {
       "main": [
@@ -1036,8 +929,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "OpenAI1": {
@@ -1326,5 +1218,15 @@
         ]
       ]
     }
-  }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "671dc399-1990-467c-bc18-707b823eaa1b",
+  "meta": {
+    "instanceId": "5484ff8886008941223f906d261ce002f9cd4a716f89f4cd3384770ee616c550"
+  },
+  "id": "MzpfFKNjOTGhENCa",
+  "tags": []
 }

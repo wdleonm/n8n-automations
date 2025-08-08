@@ -1,0 +1,171 @@
+{
+  "name": "0507-whatsapp-crm-automation",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "lead-capture",
+        "options": {}
+      },
+      "id": "2ea6b336-443d-4e29-9c43-7cdc6aa55e8c",
+      "name": "Webhook - Captura de clientes potenciales",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -208,
+        160
+      ],
+      "typeVersion": 1,
+      "webhookId": "bfb89cce-06ca-4277-9d6d-b02457988cfc"
+    },
+    {
+      "parameters": {
+        "sheetId": "your_google_sheet_id_here",
+        "range": "Leads!A1",
+        "options": {}
+      },
+      "id": "442eb057-8e10-4ae9-8c6f-3dab03193093",
+      "name": "Google Sheets - Registro de copias de seguridad",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        48,
+        64
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googleApi": {
+          "id": null,
+          "name": "Google Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://your-crm-domain.com/wp-json/fluent-crm/v2/contacts",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "01386f42-daab-4706-93cf-13c8036febd3",
+      "name": "FluentCRM - Agregar contacto",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        48,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "your@email.com",
+        "toEmail": "={{$json[\"email\"]}}",
+        "subject": "Welcome to Account Craft 🚀",
+        "text": "Hola {{$json[\"name\"]}},\n\n¡Gracias por unirte a mi comunidad Te ayudaremos a construir tu canal de YouTube y a ganar dinero como un profesional. ¡Mantente al tanto! 🔥\n\nSaludos",
+        "options": {}
+      },
+      "id": "6b581e17-8992-423b-b933-f73224177a21",
+      "name": "Enviar correo electrónico de calentamiento",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        304,
+        64
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "smtp": {
+          "id": null,
+          "name": "SMTP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.whinta.com/send",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "a6815c61-3430-491e-b55b-79593356fd6a",
+      "name": "Enviar WhatsApp a través de Whinta",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        560,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://your-crm-domain.com/wp-json/fluent-crm/v2/contacts/update",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "id": "f5bd4af5-3bf4-49ae-b6fc-6c1c6b66cb31",
+      "name": "Actualizar la etiqueta CRM al cliente",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        800,
+        64
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Captura de clientes potenciales": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets - Registro de copias de seguridad",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "FluentCRM - Agregar contacto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - Registro de copias de seguridad": {
+      "main": [
+        [
+          {
+            "node": "Enviar correo electrónico de calentamiento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar correo electrónico de calentamiento": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp a través de Whinta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar WhatsApp a través de Whinta": {
+      "main": [
+        [
+          {
+            "node": "Actualizar la etiqueta CRM al cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "58e7ea00-9172-4e10-8d50-2c21edf1d787",
+  "meta": {
+    "instanceId": "5484ff8886008941223f906d261ce002f9cd4a716f89f4cd3384770ee616c550"
+  },
+  "id": "LaX5dtWxHNUmMgyQ",
+  "tags": []
+}
