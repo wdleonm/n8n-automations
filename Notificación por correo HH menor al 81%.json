@@ -1,0 +1,315 @@
+{
+  "name": "Notificación por correo HH menor al 81%",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2
+              ],
+              "triggerAtHour": 9
+            },
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2
+              ],
+              "triggerAtHour": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        -416
+      ],
+      "id": "4e8e281f-c317-4df4-87bc-880c9583e192",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dbb4ad25-6698-4dba-95d0-0fcf713a17df",
+              "leftValue": "={{ $json['81'] }}",
+              "rightValue": "No",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "ca8f5be2-df03-4a86-b40e-eee0ac6ec041",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -656,
+        -336
+      ],
+      "id": "a576e532-089a-46bc-9622-178f2c080868",
+      "name": "If_horas"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "Colaborador",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -160,
+        -496
+      ],
+      "id": "63aacdff-99b9-46c7-a1f5-ee14be875b9c",
+      "name": "Merge",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "Reporte de HH efectivas en el Xtiming menor a 81% a la fecha",
+        "message": "=<p>Buen día, <b>{{ $node[\"Cargar_correos\"].json[\"Colaborador\"] }}</b>,</p>\n<p>Revisando la carga de las HH que has registrado en el Xtiming a la fecha, notamos que tus horas efectivas reportadas en el mes de <b> {{ $json.Mes }} </b> son: <b> {{ $json.Reportadas }}</b>.</p> <p>Te falta registrar algunas horas para lograr el <b>81%</b> de horas efectivas reportadas como mínimo requerido según la cantidad de <b> {{ $json.Dias }} días hábiles </b>transcurridos a la fecha y hora a en la cual se actualizo el archivo de resumen de horas que tienes compartido, en el nombre de este archivo al final te dice la fecha y hora.</p> <p>. Recuerda que tu registro al día de tus horas efectivas en el Xtiming es muy importante para poder ajustar los porcentajes de dedicación que tienes en cada solicitud o en la continuidad, no esperes a cargar solo los martes, porque esta actividad no permite hacer los ajustes antes mencionados.</p><p>Agradecemos tu gestión para terminar el reporte de horas pendientes.</p> <p> El reporte del 100 de las HH para este mes de <b>{{ $json.Mes }} </b>sería <b>{{ $json.Estimadas }} </b> gracias de antemano.  </p> <p>Quedamos atentos a tus comentarios.</p> <p>Saludos.</p><p>__</p><p>Williams León</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        336,
+        -416
+      ],
+      "id": "cdd74c51-81d6-4808-bc63-0eb5b99a4099",
+      "name": "Send a message",
+      "webhookId": "2d06e9e0-e77c-4d5d-b0df-8a8f5f0c2c37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ",
+          "mode": "list",
+          "cachedResultName": "Xtiming Reporte de HH, Solicitudes y Asignaciones 02-01-2024_al 12-06-2025_11:40hrs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 394230088,
+          "mode": "list",
+          "cachedResultName": "Tabla_SC",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit#gid=394230088"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Colaborador",
+              "lookupValue": "={{ $json.Colaborador }}"
+            }
+          ]
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A1:B25"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -400,
+        -400
+      ],
+      "id": "51015c4c-a42d-4b83-a6af-4b8b49ad5b41",
+      "name": "Cargar_correos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eULwmncC01bWxHaV",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ",
+          "mode": "list",
+          "cachedResultName": "Xtiming Reporte de HH, Solicitudes y Asignaciones 02-01-2024_al 10-06-2025_09:40hrs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 921679328,
+          "mode": "list",
+          "cachedResultName": "Colaborador Mes Hora Efectivas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit#gid=921679328"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A34:G49"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -848,
+        -480
+      ],
+      "id": "0716bebc-6815-4923-bef4-7b5639181467",
+      "name": "Cargar_Horas",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eULwmncC01bWxHaV",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "773bb2d7-21d6-43d0-bad5-ae40ca927a24",
+              "name": "Colaborador",
+              "value": "={{ $json.Colaborador }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        -496
+      ],
+      "id": "1907129a-8b59-4d65-8c10-00395a80e5dc",
+      "name": "Edit Fields Horas Correos"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cargar_Horas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_horas": {
+      "main": [
+        [
+          {
+            "node": "Cargar_correos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields Horas Correos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar_correos": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Cargar_Horas": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If_horas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields Horas Correos": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3e236e96-4964-47cd-a17b-fe21362e6f2b",
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e6457e14eae7e20b31dd81dd90e6c21dfd0e0662b1269b1bd78b64ba0fd2a545"
+  },
+  "id": "If17vW9JpGrFbMgI",
+  "tags": []
+}
