@@ -1,0 +1,417 @@
+{
+  "name": "Leer factura | Guardar en Google Sheet",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d122b042-02b0-432a-9fdb-a85bae9081d7",
+      "name": "Telegram Trigger Bot Platzi 2",
+      "webhookId": "c6ac658b-ecff-46c9-8517-282305f5f242",
+      "credentials": {
+        "telegramApi": {
+          "id": "sRPqr4vROXtDqFEM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[2].file_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f038f258-b64a-4bd6-9801-4debecf51751",
+      "name": "Get a file",
+      "webhookId": "920c6038-a8d2-44ae-9824-dc94c31d7871",
+      "credentials": {
+        "telegramApi": {
+          "id": "sRPqr4vROXtDqFEM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Accede al campo de datos\nconst file = items[0].binary?.data; // AsegÃºrate de que el archivo estÃ© en el campo 'binary.data'\n\nif (file) {\n    // Extraer la extensiÃ³n del archivo a partir del nombre\n    const fileExtension = file.fileName.split('.').pop().toLowerCase();\n\n    // Verificar y establecer el tipo MIME correcto\n    if (fileExtension === 'jpg' || fileExtension === 'jpeg') {\n        file.mimeType = 'image/jpeg'; // Cambiar MIME a 'image/jpeg'\n    } else if (fileExtension === 'png') {\n        file.mimeType = 'image/png'; // Cambiar MIME a 'image/png'\n    } else {\n        throw new Error(\"El archivo no es una imagen vÃ¡lida.\");\n    }\n\n    // Devuelve los datos corregidos\n    return [{ binary: { data: file } }];\n} else {\n    throw new Error(\"No se encontraron datos binarios en el archivo.\");\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a8bf471a-8b35-4c8b-8ace-9404dfdaaab7",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash"
+        },
+        "text": "Eres un experto en analisis OCR,\n mira la imagen y detecta:\n- Fecha: dd-mm-yyyy\n- Monto: En COP $\n- Glosa: Descripción del gasto\n- Proveedor/Empresa: Comercio donde se realizó el gasto\n- NIT: Número de Identificación Tributario en Colombia\n- Método de Pago:  Método o Forma de Pago que puede ser Efectivo, Tarjeta de Crédito ó Tarjeta de Débito\n\nEl output entrégalo en formato JSON\n",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "6aa06136-3d67-4a06-9ad1-e5d49da6762b",
+      "name": "Analyze image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "su6ctWDhEcyY4vSz",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9df1057e-3d59-488f-abba-f8a327d356ea",
+              "name": "fototelegram",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "0707610e-b7f9-40e3-88e4-7f31795780fc",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.fototelegram}}",
+        "options": {
+          "systemMessage": "ACTÚA COMO LUZIA LA ASISTENTE FINANCIERA QUE AYUDA A SER PRODUCTIVO A LOS HUMANOS ORGANIZANDO LA INFORMACIÓN FINANCIERA TU ROL ES EXTRAER Y REGISTRAR INFORMACIÓN DE RECIBOS, BOLETAS, GASTOS, O DETALLES ENTREGADOS VÍA FORMATO DE TEXTO PLANO, ARCHIVOS PDF O AUDIO, TRASPASANDOLOS A UNA PLANILLA EN GOOGLE SHEETS DE FORMA CLARA, EFICIENTE Y ORDENADA.\nINSTRUCCIONES\n●\tPROCESA LOS DATOS COMO FECHAS, MONTOS/SALDOS , COMERCIO/EMPRESA/PROVEEDOR, NIT, METODO/FORMA DE PAGO y GLOSAS / DESCRIPCIIONES DETALLADAS.\n●\tSOLO DEBES REGISTRAR EL TOTAL DEL GASTO, FECHA, NIT, METODO/FORMA DE PAGO Y EL COMERCIO/EMPRESA/PROVEEDOR o establecimiento DONDE SE REALIZÓ EL GASTO.\n●\tIGNORA SUBPRODUCTOS O DETALLES INDIVIDUALES DENTRO DE UNA BOLETA, SÓLO GASTOS TOTALES\n●\tREGISTRA LOS DATOS EN EL SIGUIENTE FORMATO:\n●\tFecha: dd-mm-yyyy\n●\tGlosa: Descripción del gasto (si es que lo dicen)\n●\tMonto: XX\n●\tProveedor/Comercio: Comercio o establecimiento donde se realizó el gasto\n●\tNIT: Número de Identificación Tributario en Colombia\n●\tMétodo de Pago: Método o Forma de Pago que puede ser Efectivo, Tarjeta de Crédito ó Tarjeta de Débito\n●\tLOS MONTOS DEBEN REGISTRARSE SIN PUNTOS NI COMAS (EJEMPLO: Registra \"20000\" EN VEZ DE \"20,000\" o \"20.000\").\n●\tUTILIZA LA FECHA ACTUAL, {{ $now }} , COMO REFERENCIA SI LA FECHA NO ES PROPORCIONADA.\n●\tMANEJA CON CUIDADO LA INFORMACIÓN INCOMPLETA:\n○\tSI FALTA ALGUN DATO, ANOTALO CLARAMENTE COMO \"NO PROPORCIONADO\".\nGARANTIZA LA EXACTITUD EN LA TRANSCRIPCIÓN Y LA ORGANIZACIÓN EN LA estructura de los datos. Utiliza UN TONO PROFESIONAL Y CONSISTENTE cuando registres los datos.\nPASO A PASO DE TU RAZONAMIENTO:\n1.\tCOMPRENDER LA FUENTE: 1.1. IDENTIFICAR el formato y tipo de entrada (texto, audio, o PDF). 1.2. ANALIZAR si la información está completa o requiere inferencias.\n2.\tEXTRAER LOS DATOS: 2.1. LOCALIZAR el total del Monto, fecha, comercio/proveedor/empresa asociado, Glosa/Descripción, NIT y Método de PAgo 2.2. IGNORAR SUBPRODUCTOS O DETALLES ESPECÍFICOS, CENTRÁNDOTE SOLO EN EL TOTAL, EL COMERCIO, NIT y Método de Pago.\n3.\tVERIFICAR Y ORGANIZAR: 3.1. ASEGURAR que los datos extraídos sean precisos y completos. 3.2. FORMATEAR los datos correctamente antes de registrarlos.\n4.\tREGISTRAR EN GOOGLE SHEETS: 4.1. TRASPASAR cada dato en su respectivo campo. 4.2. AGREGAR NOTAS EN CASO DE INFORMACIÓN INCOMPLETA O INFERIDA.\n5.\tREVISAR EL REGISTRO: 5.1. REALIZAR UNA REVISIÓN FINAL para garantizar consistencia y claridad.\nQUÉ NO HACER:\n●\tNUNCA OMITAS INFORMACIÓN CLAVE COMO FECHAS, MONTOS O EL NOMBRE DEL COMERCIO.\n●\tNUNCA INVENTES DATOS SI NO SON PROPORCIONADOS.\n●\tNUNCA FORMATEES LOS DATOS DE MANERA INCORRECTA O INCONSISTENTE.\n●\tNUNCA INCLUYAS DETALLES DE SUBPRODUCTOS O DESGLOSES INTERNOS DE BOLETAS.\n●\tNUNCA SUPONGAS FECHAS DISTINTAS A LA ACTUAL SI NO SON MENCIONADAS.\n●\tNUNCA REGISTRES LA INFORMACIÓN SIN VERIFICAR SU EXACTITUD.\nEJEMPLOS DE REGISTRO:\nEntrada: Texto: \"Boleta de Almuerzo, 25320, fecha: 12 de Febrero.\" Registro:\n●\tFecha: 12/02/2025\n●\tMonto: COP 25300\n●\tGlosa/Descripción: Almuerzo\n●\tProveedor/Empresa: El Gavilan Pollero\n●\tNIT: 12387664\n●\tMétodo de Pago: Tarjeta de Crédito\nEntrada: Audio: \"Gasto total en la rumba del Viernes en Perro Negro Medellin, 300000. fecha: Borré Casette.\" Registro:\n●\tFecha: DD/MM/YYYY\n●\tMonto: COP 300000\n●\tGlosa: Rumba en Medellín\n●\tProveedor/Comercio: Perro Negro\n●\tNIT: No Proporcionado\n●\tMétodo de Pago: No proporcionado\nEntrada: PDF: Total: 6,700; Fecha: 12-02-2025; Comercio: OpenAI; NIT: 743629992 ; Detalle: Tokens para automatizar en n8n; Método de Pago: Tarjeta de Crédito Registro:\n●\tFecha: 12/02/2025\n●\tMonto: COP 6700\n●\tGlosa: Tokens para automatizar en n8n\n●\tProveedor/Comercio: OpenAI\n●\tNIT: 743629992\n●\tMétodo de Pago: Tarjeta de Crédito\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        320
+      ],
+      "id": "877a8f3d-275b-4adf-9986-1d46ec9fc300",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxTokens": 2000,
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        32,
+        528
+      ],
+      "id": "91e4c7bb-69fb-4473-bb3c-213780f56798",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "NcctREjjnQFdryFQ",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1IBmoxvRPz5tHnVHJtJldLzscqq9q1mQ3h5qPAPW-erU",
+          "mode": "list",
+          "cachedResultName": "Agente Registra Platzi",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IBmoxvRPz5tHnVHJtJldLzscqq9q1mQ3h5qPAPW-erU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1IBmoxvRPz5tHnVHJtJldLzscqq9q1mQ3h5qPAPW-erU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $fromAI(\"Fecha\")}}",
+            "Glosa/Descripción": "={{ $fromAI(\"Descripcion\")}}",
+            "Monto": "={{ $fromAI(\"Monto\")}} ",
+            "Proveedor/Comercio": "={{ $fromAI(\"Comercio\")}} ",
+            "NIT": "={{ $fromAI(\"NIT\")}} ",
+            "Método de Pago": "={{ $fromAI(\"MetodoPago\")}} "
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Glosa/Descripción",
+              "displayName": "Glosa/Descripción",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Monto",
+              "displayName": "Monto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Proveedor/Comercio",
+              "displayName": "Proveedor/Comercio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "NIT",
+              "displayName": "NIT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Método de Pago",
+              "displayName": "Método de Pago",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        448,
+        512
+      ],
+      "id": "f11e6e94-27c0-40cf-8dba-fda8b79ccbd1",
+      "name": "Append row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4ltxVJlEQfMZf0tO",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger Bot Platzi 2').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        320
+      ],
+      "id": "f1c1675c-bf96-431b-9a92-d881be68aec9",
+      "name": "Send a text message",
+      "webhookId": "53d0a2da-f43d-4e17-90eb-f90028f72f3e",
+      "credentials": {
+        "telegramApi": {
+          "id": "sRPqr4vROXtDqFEM",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Automatización Registro de Gastos  \nToma la imagen de una factura enviada por Telegram a través de un bot previamente configurado y registra los datos de la factura en una hoja de Google sheet ",
+        "height": 96,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -704,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "1410849f-ef36-498d-9972-573af1a7242d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Pasos para crear bot en telegram\n1.- Ir a Telegram y crear el bot, escribiendo en la barra de busqueda de la parte superior izquierda botfather, selecciona el primero que sale que tiene un chet azul de verificación.\n2.- Cuando inicia el agente que crear los bot te pedira un nombre para el bot ejemplo registrowilliamsbot, siempre debe terminar con bot al final del nombre.\n3.- Este agente de bot te desplegara un menu donde debes escoger \n- /newbot - create a new bot para inicar o crear el bot, \n- allí te generar una key y una url l link de tu bot. Ejemplo \"Use this token to access the HTTP API:\n8353377285:AAEVCxxxxxxxxxxxx xxxxxxxxxxx\" \n- url t.me/registrowilliamsbot.   \n4.- Con tu bot de telegram debes iniciarlo con /start para poder comenzar a enviarle mensajes o en este caso las imágenes de la factura",
+        "height": 320,
+        "width": 640,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -704,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "5677075c-fce0-4b6b-a8a5-63574c553f4b",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger Bot Platzi 2": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1870e5d9-b8e1-4df5-ab93-f7074f515a58",
+  "meta": {
+    "instanceId": "5484ff8886008941223f906d261ce002f9cd4a716f89f4cd3384770ee616c550"
+  },
+  "id": "zgpNMnVQm5pJgknF",
+  "tags": []
+}
