@@ -1,0 +1,76 @@
+{
+  "name": "MCP Supabase Server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "MCP"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b9d8f207-04bc-4357-b738-9e9b21dece52",
+      "name": "MCP Server Trigger",
+      "webhookId": "c2b60698-32ca-4e2d-ab87-cc8cc1a19838"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "empleados",
+          "mode": "list",
+          "cachedResultName": "empleados"
+        },
+        "limit": 220,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        96,
+        208
+      ],
+      "id": "2fe5fb52-058a-45a0-a2f3-ced61c7f4089",
+      "name": "Select rows from a table in Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "tSUQXxpKLhIc7Lx7",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Select rows from a table in Postgres": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e4531803-00af-4ae5-8691-c1ae49f663d4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5484ff8886008941223f906d261ce002f9cd4a716f89f4cd3384770ee616c550"
+  },
+  "id": "5l4fcFrvy9Zi1U8N",
+  "tags": []
+}
