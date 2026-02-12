@@ -1,0 +1,471 @@
+{
+  "name": "Consulta Pedidos AFV vs SFL Febeca v3",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "1 8-20/2 * * 1-6"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        352
+      ],
+      "id": "c9ac29f7-1724-406c-ae80-6d9642f7fb57",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4766a82-85e8-4d63-baa2-dfa38caffdd4",
+              "name": "sql_timeout",
+              "value": 120000,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        352
+      ],
+      "id": "acf130a9-abf4-4b4a-a953-78d4f653d3df",
+      "name": "Edit Fields Config"
+    },
+    {
+      "parameters": {
+        "content": "## Comparar Pedidos AFV VS SFL FEBECA",
+        "height": 128,
+        "width": 528,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "2513db70-1123-4dbf-a368-f58adf4ed7c4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "deae1fc5-71b2-42a4-97f1-fd76df0a0b30",
+              "name": "Empresa",
+              "value": "={{ $json.Empresa }}",
+              "type": "string"
+            },
+            {
+              "id": "1b3fc192-4ecb-4c50-ab34-5a9fdda0e3ac",
+              "name": "FechaHora",
+              "value": "={{ $json.FechaHora }}",
+              "type": "string"
+            },
+            {
+              "id": "6a1d49c7-cd0a-4c32-bdfb-878958a4229e",
+              "name": "BD_SFL",
+              "value": "={{ $json.BD }}",
+              "type": "string"
+            },
+            {
+              "id": "a6c8bb43-96f0-414e-89f1-3ca2ab9d217b",
+              "name": "Cantidad_SFL",
+              "value": "={{ $json.Cantidad_SFL }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        256
+      ],
+      "id": "26f0c34c-7e5c-422a-b8cc-d8360d6fea36",
+      "name": "Edit Fields Preparar Data SFL"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "82cf3c79-c338-4278-9cf9-80678b0ad44f",
+              "name": "Empresa",
+              "value": "={{ $json.Empresa }}",
+              "type": "string"
+            },
+            {
+              "id": "1b3fc192-4ecb-4c50-ab34-5a9fdda0e3ac",
+              "name": "FechaHora",
+              "value": "={{ $json.FechaHora }}",
+              "type": "string"
+            },
+            {
+              "id": "5a06210f-77b3-4fdb-b65b-fc88fa132a81",
+              "name": "BD_AFV",
+              "value": "={{ $json.BD }}",
+              "type": "string"
+            },
+            {
+              "id": "a6c8bb43-96f0-414e-89f1-3ca2ab9d217b",
+              "name": "Cantidad_AFV",
+              "value": "={{ $json.Cantidad_AFV }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        448
+      ],
+      "id": "c908fdb7-28ff-480f-a8f9-f958fc2bab29",
+      "name": "Edit Fields Preparar Data AFV"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": "={{ false }}",
+        "fieldsToMatchString": "FechaHora",
+        "mergeByFields": {
+          "values": [
+            {}
+          ]
+        },
+        "joinMode": "keepEverything",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1248,
+        352
+      ],
+      "id": "20c4c3f7-df52-40be-ba1d-1113d8ddf858",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Usar la variable de n8n {{ $node[\"Code | Calcular Rango Horas\"].json[\"fecha_inicio\"] }}\nSELECT \n    'Febeca' AS Empresa,\n    'FEBECA' AS BD,\n    FORMAT(CREATEDATE, 'yyyy-MM-dd HH:00') AS FechaHora,\n    COUNT(*) AS Cantidad_SFL\nFROM SOFTLANDPRD.FEBECA.PEDIDO\nWHERE CREATEDATE >= '{{ $node[\"Code | Calcular Rango Horas\"].json[\"fecha_inicio\"] }}'\n  AND CREATEDATE <= '{{ $node[\"Code | Calcular Rango Horas\"].json[\"fecha_fin\"] }}'\n  AND PEDIDO LIKE 'P[0-9]%'\n  AND CreatedBy = 'produsfladm'\nGROUP BY FORMAT(CREATEDATE, 'yyyy-MM-dd HH:00')\nORDER BY FechaHora DESC;"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        256
+      ],
+      "id": "d4805362-7173-40e8-8a31-bfb88e5e6ee8",
+      "name": "SFL PRD VZLA FEBECA",
+      "credentials": {
+        "microsoftSql": {
+          "id": "pUasMhO5nGfi50nJ",
+          "name": "Microsoft SQL SFL PRD rpt_mayoreo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    'Febeca' AS Empresa,  \n    'DBAFV' AS BD,\n    DATE_FORMAT(FECHATRANSMISION, '%Y-%m-%d %H:00') AS FechaHora,\n    COUNT(*) AS Cantidad_AFV\nFROM DBAFV.ORDEN_LOTE\nWHERE FECHATRANSMISION >= '{{ $node[\"Code | Calcular Rango Horas\"].json[\"fecha_inicio\"] }}'\n  AND FECHATRANSMISION <= '{{ $node[\"Code | Calcular Rango Horas\"].json[\"fecha_fin\"] }}'\nGROUP BY DATE_FORMAT(FECHATRANSMISION, '%Y-%m-%d %H:00')\nORDER BY FechaHora DESC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        800,
+        448
+      ],
+      "id": "0ff27ae7-7152-404f-80b8-4170ab944545",
+      "name": "AFV PRD FEBECA",
+      "credentials": {
+        "mySql": {
+          "id": "KDCkw46ITlBTEaOo",
+          "name": "MySQL AFV PRD FEBECA WLeon"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Configuración\nconst horasAevaluar = 15;\nconst inicioJornada = 6;  // 6 AM\nconst finJornada = 22;    // 10 PM (Ajustado a tu nueva hora de cierre)\nconst duracionJornada = finJornada - inicioJornada;\n\nlet fechaFin = new Date(); // Ahora\nlet fechaInicio = new Date(fechaFin);\nlet horasRestantes = horasAevaluar;\n\nwhile (horasRestantes > 0) {\n    fechaInicio.setHours(fechaInicio.getHours() - 1);\n    \n    let horaActual = fechaInicio.getHours();\n    let diaSemana = fechaInicio.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado\n    \n    // VALIDACIÓN:\n    // 1. Que la hora esté en el rango (6 AM a 10 PM)\n    // 2. Que el día NO sea domingo (diaSemana !== 0)\n    if (horaActual >= inicioJornada && horaActual < finJornada && diaSemana !== 0) {\n        horasRestantes--;\n    }\n}\n\nreturn {\n    fecha_inicio: fechaInicio.toISOString().slice(0, 19).replace('T', ' '),\n    fecha_fin: fechaFin.toISOString().slice(0, 19).replace('T', ' ')\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        352
+      ],
+      "id": "a799bc45-8747-451c-9b2b-a23b83d3bd3a",
+      "name": "Code | Calcular Rango Horas"
+    },
+    {
+      "parameters": {
+        "jsCode": "items.forEach(item => {\n  const cantidadAFV = item.json.Cantidad_AFV || 0;\n  const cantidadSFL = item.json.Cantidad_SFL || 0;\n  const diferencia = cantidadAFV - cantidadSFL;\n  \n  let porcentajeDiferencia = 0;\n\n  // Usamos el valor máximo entre ambos para evitar división por cero \n  // y obtener una proporción real de la discrepancia.\n  const baseCalcular = Math.max(cantidadAFV, cantidadSFL);\n\n  if (baseCalcular !== 0) {\n    porcentajeDiferencia = (diferencia / baseCalcular) * 100;\n  } else {\n    // Si ambos son 0, la diferencia es 0%\n    porcentajeDiferencia = 0;\n  }\n\n  item.json.diferencia = diferencia;\n  // Guardamos el porcentaje (puede ser negativo o positivo)\n  item.json.porcentajeDiferencia = porcentajeDiferencia; \n});\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        352
+      ],
+      "id": "26b2fb9f-abd2-4750-80ae-76f015f17720",
+      "name": "Code | Comparar Cantidad"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtenemos la fecha/hora exacta del momento de ejecución\nconst now = new Date();\n\nconst bloques = {\n  '2h': { total: 0, count: 0 },\n  '4h': { total: 0, count: 0 },\n  '8h': { total: 0, count: 0 },\n  '15h': { total: 0, count: 0 },\n};\n\nitems.forEach(item => {\n  // Aseguramos que la fecha venga en formato correcto para JS\n  const fechaPedido = new Date(item.json.FechaHora);\n  \n  // Calculamos la antigüedad en milisegundos y pasamos a horas\n  const diffMs = now - fechaPedido;\n  const horasAntiguedad = diffMs / (1000 * 60 * 60);\n\n  // Obtenemos el valor absoluto del porcentaje (o 0 si es nulo)\n  const porcentaje = item.json.porcentajeDiferencia !== null ? Math.abs(item.json.porcentajeDiferencia) : 0;\n  \n  // --- LÓGICA DINÁMICA ---\n  \n  // Bloque 2 Horas (Reloj)\n  // Si el pedido ocurrió hace 2.0 horas o menos\n  if (horasAntiguedad <= 2) { \n    bloques['2h'].total += porcentaje;\n    bloques['2h'].count++;\n  }\n  \n  // Bloque 4 Horas (Reloj)\n  if (horasAntiguedad <= 4) { \n    bloques['4h'].total += porcentaje;\n    bloques['4h'].count++;\n  }\n  \n  // Bloque 8 Horas (Reloj)\n  if (horasAntiguedad <= 8) { \n    bloques['8h'].total += porcentaje;\n    bloques['8h'].count++;\n  }\n  \n  // Bloque 15 Horas (Total de la consulta)\n  // Aquí sumamos todo lo que trajo la BD, ya que el filtrado de \"horas hábiles\" \n  // lo hiciste en el paso anterior.\n  bloques['15h'].total += porcentaje;\n  bloques['15h'].count++;\n});\n\n// --- CÁLCULO DE PROMEDIOS ---\n\nObject.keys(bloques).forEach(key => {\n  const total = bloques[key].total;\n  // Evitamos división por cero si no hubo pedidos en ese rango\n  const count = bloques[key].count > 0 ? bloques[key].count : 1;\n  \n  bloques[key].average = total / count;\n  \n  // Opcional: Redondear a 2 decimales para que se vea limpio en el reporte final\n  bloques[key].average = Math.round(bloques[key].average * 100) / 100;\n});\n\n// Asignamos el objeto de bloques al primer item para pasarlo al siguiente nodo\nitems[0].json.bloques = bloques;\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        352
+      ],
+      "id": "2ba2f3db-f172-4ed3-abc2-3208dbf60b40",
+      "name": "Code | Agrupar en Bloques"
+    },
+    {
+      "parameters": {
+        "jsCode": "const bloques = items[0].json.bloques;\nconst alertas = {};\n\nObject.keys(bloques).forEach(key => {\n  const porcentaje = bloques[key].average;\n  \n  // Ajuste de umbrales según tu solicitud:\n  // Alta: > 15%\n  // Media: 10% - 15%\n  // Baja: 5% - 10%\n  // Estable: < 5% (Opcional, para mayor claridad)\n\n  if (porcentaje >= 15) {\n    alertas[key] = 'Alta';\n  } else if (porcentaje >= 10) {\n    alertas[key] = 'Media';\n  } else if (porcentaje >= 5) {\n    alertas[key] = 'Baja';\n  } else {\n    alertas[key] = 'Estable'; // O puedes dejarlo como 'Baja' si prefieres\n  }\n});\n\nitems[0].json.alertas = alertas;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        352
+      ],
+      "id": "ca9d2dd3-85f5-4fe7-852d-024d7b68bec8",
+      "name": "Code | Evaluar Resultados"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Buscar los bloques y alertas en cualquier ítem del array\nlet bloques = null;\nlet alertas = null;\n\nfor (const item of items) {\n  if (item.json.bloques) {\n    bloques = item.json.bloques;\n    alertas = item.json.alertas;\n    break; \n  }\n}\n\n// 2. Si después de buscar no hay nada, generamos un aviso en lugar de dar error\nif (!bloques || !alertas) {\n  return [{ json: { \n    html: \"<h1>Reporte sin Datos</h1><p>No se encontraron cálculos de bloques. Revisa que el nodo 'Agrupar en Bloques' se haya ejecutado correctamente.</p>\",\n    htmlResumenBloques: \"\" \n  }}];\n}\n\n// 3. Ordenar ítems que sí tengan FechaHora para la tabla detalle\nconst itemsConFecha = items.filter(i => i.json.FechaHora);\nitemsConFecha.sort((a, b) => new Date(b.json.FechaHora) - new Date(a.json.FechaHora));\n\n// --- SECCIÓN: RESUMEN DE BLOQUES ---\nlet htmlResumenBloques = '<h2>Resumen de Rendimiento por Bloques</h2>';\nhtmlResumenBloques += `<table style=\"width:100%; max-width: 500px; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13px; margin-bottom: 20px;\">\n  <tr style=\"background-color: #004a99; text-align: left; color: white;\">\n    <th style=\"padding: 10px; border: 1px solid #ddd;\">Bloque de Tiempo</th>\n    <th style=\"padding: 10px; border: 1px solid #ddd;\">Promedio Dif.%</th>\n    <th style=\"padding: 10px; border: 1px solid #ddd;\">Estado de Alerta</th>\n  </tr>`;\n\nfor (const [bloque, data] of Object.entries(bloques)) {\n  const promedio = (data.average || 0).toFixed(2);\n  const nivelAlerta = alertas[bloque] || 'Baja';\n  \n  let colorFondo = '#d4edda'; let colorTexto = '#155724';\n  if (nivelAlerta === 'Alta') { colorFondo = '#f8d7da'; colorTexto = '#721c24'; }\n  else if (nivelAlerta === 'Media') { colorFondo = '#fff3cd'; colorTexto = '#856404'; }\n  else if (nivelAlerta === 'Baja') { colorFondo = '#e2e3e5'; colorTexto = '#383d41'; }\n\n  htmlResumenBloques += `<tr>\n    <td style=\"padding: 10px; border: 1px solid #ddd; font-weight: bold;\">Últimas ${bloque}</td>\n    <td style=\"padding: 10px; border: 1px solid #ddd;\">${promedio}%</td>\n    <td style=\"padding: 10px; border: 1px solid #ddd; background-color: ${colorFondo}; color: ${colorTexto}; font-weight: bold; text-align: center;\">\n      ${nivelAlerta.toUpperCase()}\n    </td>\n  </tr>`;\n}\nhtmlResumenBloques += '</table>';\n\n// --- SECCIÓN: DETALLE POR HORA ---\nlet htmlDetalle = '<h2>Detalle por Hora</h2>';\nhtmlDetalle += `<table style=\"width:100%; max-width: 850px; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12px;\">\n  <tr style=\"background-color: #004a99; text-align: left; color: white;\">\n    <th style=\"padding: 10px; border: 1px solid #ddd;\">Empresa</th>\n    <th style=\"padding: 10px; border: 1px solid #ddd; width: 140px;\">FechaHora</th>\n    <th style=\"padding: 10px; border: 1px solid #ddd; width: 70px; text-align: center;\">Cant. SFL</th>\n    <th style=\"padding: 10px; border: 1px solid #ddd; width: 70px; text-align: center;\">Cant. AFV</th>\n    <th style=\"padding: 10px; border: 1px solid #ddd; width: 155px; text-align: center; white-space: nowrap;\">Diferencia %</th>\n  </tr>`;\n\nitemsConFecha.forEach(item => {\n  const pDif = item.json.porcentajeDiferencia;\n  const pDifTexto = (pDif !== null && pDif !== undefined) ? Math.abs(pDif).toFixed(2) + '%' : '0.00%';\n  let direccion = '';\n  if (item.json.Cantidad_AFV > item.json.Cantidad_SFL) direccion = ' <span style=\"font-size: 10px; color: #004a99;\">(↑ AFV)</span>';\n  else if (item.json.Cantidad_SFL > item.json.Cantidad_AFV) direccion = ' <span style=\"font-size: 10px; color: #28a745;\">(↑ SFL)</span>';\n\n  htmlDetalle += `<tr>\n    <td style=\"padding: 8px; border: 1px solid #ddd;\">${item.json.Empresa || 'N/A'}</td>\n    <td style=\"padding: 8px; border: 1px solid #ddd;\">${item.json.FechaHora}</td>\n    <td style=\"padding: 8px; border: 1px solid #ddd; text-align: center;\">${item.json.Cantidad_SFL || 0}</td>\n    <td style=\"padding: 8px; border: 1px solid #ddd; text-align: center;\">${item.json.Cantidad_AFV || 0}</td>\n    <td style=\"padding: 8px; border: 1px solid #ddd; font-weight: bold; text-align: center; white-space: nowrap;\">${pDifTexto}${direccion}</td>\n  </tr>`;\n});\nhtmlDetalle += '</table>';\n\nreturn [{ json: { \n  html: `<div style=\"padding:20px; font-family:Arial;\">${htmlDetalle}</div>`, \n  htmlResumenBloques: `<div style=\"padding:20px; font-family:Arial;\">${htmlResumenBloques}</div>` \n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        352
+      ],
+      "id": "15826461-9568-40ee-b571-f4a0c72a4fd2",
+      "name": "Code | Crear HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "items.forEach(item => {\n  // 1. Asegurar valores básicos\n  item.json.Empresa = item.json.Empresa || 'Febeca';\n  \n  // 2. Completar datos de SFL\n  item.json.BD_SFL = item.json.BD_SFL || 'FEBECA';\n  item.json.Cantidad_SFL = (item.json.Cantidad_SFL === null || item.json.Cantidad_SFL === undefined) ? 0 : item.json.Cantidad_SFL;\n  \n  // 3. Completar datos de AFV\n  item.json.BD_AFV = item.json.BD_AFV || 'DBAFV';\n  item.json.Cantidad_AFV = (item.json.Cantidad_AFV === null || item.json.Cantidad_AFV === undefined) ? 0 : item.json.Cantidad_AFV;\n\n  // 4. Gestión de la Fecha (Crítico para el siguiente nodo)\n  // Si por alguna razón FechaHora no existe en el merge, \n  // intentamos rescatarla de campos alternativos si existen en tus queries\n  item.json.FechaHora = item.json.FechaHora || item.json.fecha || item.json.Hora;\n});\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        352
+      ],
+      "id": "3f5928dd-9efe-483d-9551-81593147ad63",
+      "name": "Code | Completar Data"
+    },
+    {
+      "parameters": {
+        "sendTo": "=wleon@intelix.biz",
+        "subject": "=💼 Informe: Resumen de pedidos y diferencias del día para Febeca",
+        "message": "=<p>Estimado equipo,</p>\n\n<p>Adjunto encontrarán el informe de las diferencias de pedidos entre nuestras bases de datos AFV y SFL de <b>{{ $json.Empresa }}</b>. A continuación, se presenta un resumen:</p>\n\n{{ $json.htmlResumenBloques }}\n\n{{ $json.html }}\n\n<p>Por favor, revisen los datos cuidadosamente. Si la diferencia porcentual en los bloques es significativa, tomen las acciones necesarias.</p>\n\n<p>Saludos cordiales,</p>\n<p>—</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2592,
+        352
+      ],
+      "id": "daf4d943-f8e2-47d6-b4f2-a2c98c2331d8",
+      "name": "Send | Enviar alerta de Pedidos",
+      "webhookId": "f0988ecc-ee82-474b-8a36-445675844eaf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields Config": {
+      "main": [
+        [
+          {
+            "node": "Code | Calcular Rango Horas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields Preparar Data SFL": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields Preparar Data AFV": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code | Completar Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SFL PRD VZLA FEBECA": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields Preparar Data SFL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AFV PRD FEBECA": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields Preparar Data AFV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Calcular Rango Horas": {
+      "main": [
+        [
+          {
+            "node": "SFL PRD VZLA FEBECA",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AFV PRD FEBECA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Comparar Cantidad": {
+      "main": [
+        [
+          {
+            "node": "Code | Agrupar en Bloques",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Agrupar en Bloques": {
+      "main": [
+        [
+          {
+            "node": "Code | Evaluar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Evaluar Resultados": {
+      "main": [
+        [
+          {
+            "node": "Code | Crear HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Completar Data": {
+      "main": [
+        [
+          {
+            "node": "Code | Comparar Cantidad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Crear HTML": {
+      "main": [
+        [
+          {
+            "node": "Send | Enviar alerta de Pedidos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4b06d458-980a-4780-83c7-5cac12d0c0d4",
+  "meta": {
+    "instanceId": "e6457e14eae7e20b31dd81dd90e6c21dfd0e0662b1269b1bd78b64ba0fd2a545"
+  },
+  "id": "XXo2EeqomYkCEt0J",
+  "tags": []
+}
