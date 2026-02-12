@@ -17,7 +17,8 @@
               "triggerAtDay": [
                 2
               ],
-              "triggerAtHour": 15
+              "triggerAtHour": 15,
+              "triggerAtMinute": 30
             }
           ]
         }
@@ -25,141 +26,11 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1088,
-        -416
+        -1456,
+        -272
       ],
       "id": "4e8e281f-c317-4df4-87bc-880c9583e192",
       "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "dbb4ad25-6698-4dba-95d0-0fcf713a17df",
-              "leftValue": "={{ $json['81'] }}",
-              "rightValue": "No",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            },
-            {
-              "id": "ca8f5be2-df03-4a86-b40e-eee0ac6ec041",
-              "leftValue": "",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -656,
-        -336
-      ],
-      "id": "a576e532-089a-46bc-9622-178f2c080868",
-      "name": "If_horas"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "fieldsToMatchString": "Colaborador",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -160,
-        -496
-      ],
-      "id": "63aacdff-99b9-46c7-a1f5-ee14be875b9c",
-      "name": "Merge",
-      "alwaysOutputData": false
-    },
-    {
-      "parameters": {
-        "sendTo": "={{ $json.Correo }}",
-        "subject": "Reporte de HH efectivas en el Xtiming menor a 81% a la fecha",
-        "message": "=<p>Buen día, <b>{{ $node[\"Cargar_correos\"].json[\"Colaborador\"] }}</b>,</p>\n<p>Revisando la carga de las HH que has registrado en el Xtiming a la fecha, notamos que tus horas efectivas reportadas en el mes de <b> {{ $json.Mes }} </b> son: <b> {{ $json.Reportadas }}</b>.</p> <p>Te falta registrar algunas horas para lograr el <b>81%</b> de horas efectivas reportadas como mínimo requerido según la cantidad de <b> {{ $json.Dias }} días hábiles </b>transcurridos a la fecha y hora a en la cual se actualizo el archivo de resumen de horas que tienes compartido, en el nombre de este archivo al final te dice la fecha y hora.</p> <p>. Recuerda que tu registro al día de tus horas efectivas en el Xtiming es muy importante para poder ajustar los porcentajes de dedicación que tienes en cada solicitud o en la continuidad, no esperes a cargar solo los martes, porque esta actividad no permite hacer los ajustes antes mencionados.</p><p>Agradecemos tu gestión para terminar el reporte de horas pendientes.</p> <p> El reporte del 100 de las HH para este mes de <b>{{ $json.Mes }} </b>sería <b>{{ $json.Estimadas }} </b> gracias de antemano.  </p> <p>Quedamos atentos a tus comentarios.</p> <p>Saludos.</p><p>__</p><p>Williams León</p>",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        336,
-        -416
-      ],
-      "id": "cdd74c51-81d6-4808-bc63-0eb5b99a4099",
-      "name": "Send a message",
-      "webhookId": "2d06e9e0-e77c-4d5d-b0df-8a8f5f0c2c37",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "9iwAwTdzcuyhsHZ1",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ",
-          "mode": "list",
-          "cachedResultName": "Xtiming Reporte de HH, Solicitudes y Asignaciones 02-01-2024_al 12-06-2025_11:40hrs",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 394230088,
-          "mode": "list",
-          "cachedResultName": "Tabla_SC",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit#gid=394230088"
-        },
-        "filtersUI": {
-          "values": [
-            {
-              "lookupColumn": "Colaborador",
-              "lookupValue": "={{ $json.Colaborador }}"
-            }
-          ]
-        },
-        "options": {
-          "dataLocationOnSheet": {
-            "values": {
-              "rangeDefinition": "specifyRangeA1",
-              "range": "A1:B25"
-            }
-          }
-        }
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.6,
-      "position": [
-        -400,
-        -400
-      ],
-      "id": "51015c4c-a42d-4b83-a6af-4b8b49ad5b41",
-      "name": "Cargar_correos",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "eULwmncC01bWxHaV",
-          "name": "Google Sheets account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -189,15 +60,55 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.6,
       "position": [
-        -848,
-        -480
+        -1152,
+        -464
       ],
       "id": "0716bebc-6815-4923-bef4-7b5639181467",
-      "name": "Cargar_Horas",
+      "name": "Cargar_Horas_Mes",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "eULwmncC01bWxHaV",
-          "name": "Google Sheets account 2"
+          "name": "Google Sheets wleon"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ",
+          "mode": "list",
+          "cachedResultName": "Xtiming Reporte de HH, Solicitudes y Asignaciones 02-01-2024_al 10-06-2025_09:40hrs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 794038588,
+          "mode": "list",
+          "cachedResultName": "HH X Semanas",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit#gid=794038588"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A26:G41"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1168,
+        -256
+      ],
+      "id": "039fee10-d901-42f0-ab0e-656d18ecce14",
+      "name": "Cargar_Horas_Semana",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eULwmncC01bWxHaV",
+          "name": "Google Sheets wleon"
         }
       }
     },
@@ -219,11 +130,302 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        48,
-        -496
+        -496,
+        -288
       ],
       "id": "1907129a-8b59-4d65-8c10-00395a80e5dc",
-      "name": "Edit Fields Horas Correos"
+      "name": "Edit Fields Horas Mes Correos"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "34dfff38-24dc-4e69-a7cc-29002fd20441",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "Ambos_Si",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d6f08c39-7b7a-4b65-a7aa-813df6de8728",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "Mes_Si_Sem_No",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "109d7a6e-7528-40c1-a9ed-b1c21d26ad46",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "Mes_No_Sem_Si",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5e8a4060-e9f9-4054-a1bf-896c5e0f3bbd",
+                    "leftValue": "={{ $json.estado }}",
+                    "rightValue": "Ambos_No",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -16,
+        -320
+      ],
+      "id": "f760a483-e01e-42b8-8b3e-591b339b2a23",
+      "name": "Switch | Evalua HH Mes Semana"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=⚠️ Reporte de HH Satisfactorio en el Mes pero menor a 81% en la Semana 🟡",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Recibe un cordial saludo. Queremos reconocer tu buen desempeño general, ya que a la fecha has logrado cumplir satisfactoriamente con el <span style=\"color: blue;\"><b>81%</b></span> de horas efectivas requeridas para el <b>Mes de {{ $json.Mes_Curso }}</b>.</p>\n\n<p>Sin embargo, hemos notado un retraso en la carga de la semana en curso. A continuación, detallamos tu estatus:</p>\n\n<ul>\n    <li>\n        <b>Mes de {{ $json.Mes_Curso }}:</b> <span style=\"color: green;\">✔</span> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Mes.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Mes.toFixed(2) }}).\n    </li>\n    <li>\n        <b>Semana {{ $json.Semana_Curso }}:</b> <span style=\"color: red;\">⚠</span> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Sem.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Sem.toFixed(2) }}).\n    </li>\n</ul>\n\n<p>Te animamos a ponerte al día con el registro de esta semana para alinear ambos indicadores.</p>\n\n<p><b>💡 Recomendaciones para mejorar tu registro semanal:</b></p>\n\n<ol>\n    <li>\n        <b>Registro diario:</b> Es vital <i>no esperar a cargar todo los martes</i>. Mantener la carga al día evita que se acumulen horas pendientes y nos permite ajustar correctamente tus porcentajes de dedicación.\n    </li>\n    <li>\n        <b>Duración de bloques:</b> Procura que los bloques de horas continuos reportados para una misma actividad <span style=\"color: red;\"><b>no superen las 2,95 horas</b></span>.\n    </li>\n</ol>\n\n<p style=\"font-size: 1.10em; color: #555;\">\n    <i>\n        <b>Nota:</b> Estos valores corresponden a la fecha y hora de corte en la que se actualizó el archivo de resumen compartido. Puedes acceder al reporte y verificar la vigencia de los datos aquí:\n        <br>\n        <a href=\"https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?pli=1&gid=921679328#gid=921679328\" target=\"_blank\" style=\"color: #4A90E2; font-weight: bold;\">\n            Xtiming Reporte de HH-Solicitudes-Asignaciones (Ver Archivo)\n        </a>\n    </i>\n</p>\n\n<p>Agradecemos tu gestión para completar las horas pendientes de esta semana.</p>\n\n<p>Saludos cordiales,</p>\n<p>__</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        -368
+      ],
+      "id": "f8517b6c-cc56-4e72-98a0-842eb419e6cb",
+      "name": "Send | Mes_Si_Sem_No",
+      "webhookId": "2d06e9e0-e77c-4d5d-b0df-8a8f5f0c2c37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=⚠️ Reporte de HH menor a 81% en el Mes y Satisfactorio para la Semana 🟡",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Recibe un cordial saludo. Queremos alertarte sobre un desfase en el registro de horas del mes en curso, el cual está afectando tu cumplimiento general. Te pedimos tu apoyo inmediato para regularizar la carga.</p>\n\n<p>A pesar de esto, felicitamos tu compromiso con la **Semana {{ $json.Semana_Curso }}**, donde sí has cumplido satisfactoriamente con el <span style=\"color: blue;\"><b>81%</b></span> de horas efectivas requeridas.</p>\n\n<p>A continuación, detallamos tu estatus:</p>\n\n<ul>\n    <li>\n        <b>Mes de {{ $json.Mes_Curso }}:</b> <span style=\"color: red;\">❌</span> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Mes.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Mes.toFixed(2) }}).\n    </li>\n    <li>\n        <b>Semana {{ $json.Semana_Curso }}:</b> <span style=\"color: green;\">✔</span> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Sem.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Sem.toFixed(2) }}).\n    </li>\n</ul>\n\n<p>Te invitamos a aplicar el mismo rigor en el registro diario que mantuviste en la semana, para que el Mes de **{{ $json.Mes_Curso }}** logre alinearse cuanto antes.</p>\n\n<p><b>💡 Recomendaciones para ponernos al día con el Mes:</b></p>\n\n<ol>\n    <li>\n        <b>Registro diario:</b> Es vital <i>no esperar a cargar todo los martes</i>. Mantener la carga al día es crucial para recuperar el porcentaje de dedicación del mes y evitar problemas futuros en el cálculo de horas.\n    </li>\n    <li>\n        <b>Duración de bloques:</b> Procura que los bloques de horas continuos reportados para una misma actividad <span style=\"color: red;\"><b>no superen las 2,95 horas</b></span>.\n    </li>\n</ol>\n\n<p style=\"font-size: 1.10em; color: #555;\">\n    <i>\n        <b>Nota:</b> Estos valores corresponden a la fecha y hora de corte en la que se actualizó el archivo de resumen compartido. Puedes acceder al reporte y verificar la vigencia de los datos aquí:\n        <br>\n        <a href=\"https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?pli=1&gid=921679328#gid=921679328\" target=\"_blank\" style=\"color: #4A90E2; font-weight: bold;\">\n            Xtiming Reporte de HH-Solicitudes-Asignaciones (Ver Archivo)\n        </a>\n    </i>\n</p>\n\n\n\n<p>Agradecemos tu atención a esta solicitud y tu gestión para completar las horas pendientes del mes.</p>\n\n<p>Saludos cordiales,</p>\n<p>__</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        -192
+      ],
+      "id": "e66e03b3-0e7b-4a47-a47d-dc9b4fc66f9d",
+      "name": "Send | Mes_No_Sem_Si",
+      "webhookId": "2d06e9e0-e77c-4d5d-b0df-8a8f5f0c2c37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=🚨 Reporte de HH No Satisfactorio para el Mes ni para la Semana 🔴",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Recibe un cordial saludo. Te contactamos con **carácter de urgencia** para alertarte sobre un desfase crítico en el registro de tus Horas Hábiles (HH) Efectivas. **Actualmente, no se ha alcanzado el mínimo del <span style=\"color: blue;\">81%</span> requerido** ni para el mes ni para la semana en curso.</p>\n\n<p>Es fundamental que revises tus registros y acciones de forma inmediata para regularizar esta situación.</p>\n\n<p>A continuación, detallamos tu estatus:</p>\n\n<ul>\n    <li>\n        <b>Mes de {{ $json.Mes_Curso }}:</b> <span style=\"color: red;\">❌</span> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Mes.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Mes.toFixed(2) }}).\n    </li>\n    <li>\n        <b>Semana {{ $json.Semana_Curso }}:</b> <span style=\"color: red;\">❌</span> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Sem.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Sem.toFixed(2) }}).\n    </li>\n</ul>\n\n<p><b>⚠️ Solicitamos tu apoyo inmediato para corregir este desfase.</b></p>\n\n<p><b>💡 Recordatorio de Buenas Prácticas y Pautas de Carga:</b></p>\n\n<ol>\n    <li>\n        <b>Prioridad al Registro Diario:</b> Es crucial que registres tus horas **día a día**. No esperar a cargar todo los martes evita la acumulación de pendientes y asegura la correcta asignación de porcentajes de dedicación en el sistema.\n    </li>\n    <li>\n        <b>Límites de Bloques:</b> Procura que los bloques de horas continuos reportados para una misma actividad <span style=\"color: red;\"><b>no superen las 2,95 horas</b></span>.\n    </li>\n</ol>\n\n<p style=\"font-size: 1.10em; color: #555;\">\n    <i>\n        <b>Nota:</b> Estos valores corresponden a la fecha y hora de corte en la que se actualizó el archivo de resumen compartido. Puedes acceder al reporte y verificar la vigencia de los datos aquí:\n        <br>\n        <a href=\"https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?pli=1&gid=921679328#gid=921679328\" target=\"_blank\" style=\"color: #4A90E2; font-weight: bold;\">\n            Xtiming Reporte de HH-Solicitudes-Asignaciones (Ver Archivo)\n        </a>\n    </i>\n</p>\n\n<p>Agradecemos tu atención prioritaria a esta situación y quedamos atentos a que las horas pendientes sean completadas en las próximas 24 horas.</p>\n\n<p>Saludos cordiales,</p>\n<p>__</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "cdd74c51-81d6-4808-bc63-0eb5b99a4099",
+      "name": "Send | Ambos_No",
+      "webhookId": "2d06e9e0-e77c-4d5d-b0df-8a8f5f0c2c37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=📋 Reporte de HH Efectivas Satisfactorio para el Mes y la Semana 🟢",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Recibe nuestras felicitaciones. Queremos reconocer tu compromiso con el registro de actividades en Xtiming, ya que a la fecha has logrado cumplir satisfactoriamente con el <span style=\"color: blue;\"><b>81%</b></span> de horas efectivas requeridas según los días hábiles transcurridos.</p>\n\n<p>A continuación, detallamos tu cumplimiento para este corte:</p>\n\n<ul>\n    <li>\n        <b>Mes de {{ $json.Mes_Curso }}:</b> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Mes.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Mes.toFixed(2) }}).\n    </li>\n    <li>\n        <b>Semana {{ $json.Semana_Curso }}:</b> Has reportado <span style=\"color: blue;\"><b>{{ $json.Repor_Sem.toFixed(2) }}</b></span> horas (El esperado a la fecha es: {{ $json.Estima_Sem.toFixed(2) }}).\n    </li>\n</ul>\n\n<p><b>💡 Recomendaciones para mantener este excelente desempeño:</b></p>\n\n<ol>\n    <li>\n        <b>Registro diario:</b> Te invitamos a cargar tus horas día a día. Es vital <i>no esperar a cargarlo todo los martes</i>, ya que el registro oportuno nos permite ajustar correctamente tus porcentajes de dedicación en cada solicitud.\n    </li>\n    <li>\n        <b>Duración de bloques:</b> Procura que los bloques de horas continuos reportados para una misma actividad <span style=\"color: red;\"><b>no superen las 2,95 horas</b></span>.\n    </li>\n</ol>\n\n<p style=\"font-size: 1.10em; color: #555;\">\n    <i>\n        <b>Nota:</b> Estos valores corresponden a la fecha y hora de corte en la que se actualizó el archivo de resumen compartido. Puedes acceder al reporte y verificar la vigencia de los datos aquí:\n        <br>\n        <a href=\"https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?pli=1&gid=921679328#gid=921679328\" target=\"_blank\" style=\"color: #4A90E2; font-weight: bold;\">\n            Xtiming Reporte de HH-Solicitudes-Asignaciones (Ver Archivo)\n        </a>\n    </i>\n</p>\n\n<p>Agradecemos tu gestión y esperamos que continúes con esta dinámica.</p>\n\n<p>Saludos cordiales,</p>\n<p>__</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        -544
+      ],
+      "id": "a378b218-366e-460b-b308-2e8b8ba0fd31",
+      "name": "Send | Ambos_Si",
+      "webhookId": "2d06e9e0-e77c-4d5d-b0df-8a8f5f0c2c37",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ",
+          "mode": "list",
+          "cachedResultName": "Xtiming Reporte de HH, Solicitudes y Asignaciones 02-01-2024_al 12-06-2025_11:40hrs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 394230088,
+          "mode": "list",
+          "cachedResultName": "Tabla_SC",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit#gid=394230088"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A1:B16"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1168,
+        0
+      ],
+      "id": "f779e97d-5d0c-4d73-9e38-0aa67187173b",
+      "name": "Cargar_correos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eULwmncC01bWxHaV",
+          "name": "Google Sheets wleon"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "Colaborador",
+        "joinMode": "keepEverything",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -896,
+        -416
+      ],
+      "id": "63aacdff-99b9-46c7-a1f5-ee14be875b9c",
+      "name": "Merge | HH Mes - Sem",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Colaborador",
+              "field2": "Colaborador"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -688,
+        -288
+      ],
+      "id": "ed7ed82c-13c5-421f-b2de-e1af20dc3045",
+      "name": "Merge | HH - Correos",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = items; \nconst uniqueItems = {};\n\nfor (const item of allItems) {\n    const nombreRaw = item.json.Colaborador || item.json.col_1;\n    // Filtro de seguridad (Item 16)\n    if (!nombreRaw || nombreRaw.toString().trim() === \"\" || !item.json.Correo) {\n        continue; \n    }\n    const colaborador = nombreRaw.toString().trim();\n\n    if (!uniqueItems[colaborador]) {\n        // 1. PRIMERA VEZ: Guardamos TODO lo que trae el registro (incluye Estima, Cursos, etc.)\n        uniqueItems[colaborador] = {\n            ...item.json, \n            Colaborador: colaborador,\n            Correo: item.json.Correo,\n            // Aseguramos valores por defecto para evitar undefined en la lógica\n            \"81_Mes\": item.json[\"81_Mes\"] || \"No\", \n            \"81_Sem\": item.json[\"81_Sem\"] || \"No\"\n        };\n    } else {\n        // 2. SEGUNDA VEZ (Fusión):\n        const registroMaestro = uniqueItems[colaborador];\n        const datosNuevos = item.json;\n\n        // Guardamos el estado \"Si\" anterior para que no se borre al fusionar\n        const teniaMesSi = registroMaestro[\"81_Mes\"] === 'Si';\n        const teniaSemSi = registroMaestro[\"81_Sem\"] === 'Si';\n\n        // FUSIÓN TOTAL: Esto copia Estima_Sem, Semana_Curso y cualquier otro dato nuevo al maestro\n        Object.assign(registroMaestro, datosNuevos);\n\n        // RESTAURACIÓN DE SEGURIDAD:\n        // Si antes era \"Si\" o ahora es \"Si\", forzamos que sea \"Si\".\n        if (teniaMesSi || datosNuevos[\"81_Mes\"] === 'Si') {\n            registroMaestro[\"81_Mes\"] = 'Si';\n        }\n        if (teniaSemSi || datosNuevos[\"81_Sem\"] === 'Si') {\n            registroMaestro[\"81_Sem\"] = 'Si';\n        }\n        \n        // Aseguramos que el correo no se pierda\n        if (datosNuevos.Correo && !registroMaestro.Correo) {\n            registroMaestro.Correo = datosNuevos.Correo;\n        }\n    }\n}\n\n// 3. Clasificación Final\nconst outputItems = [];\nfor (const nombre in uniqueItems) {\n    const data = uniqueItems[nombre];\n\n    const mes = (data[\"81_Mes\"] || 'No').toString().trim().toLowerCase();\n    const sem = (data[\"81_Sem\"] || 'No').toString().trim().toLowerCase();\n\n    let estado = 'Otros';\n\n    if (mes === 'si' && sem === 'si') {\n        estado = 'Ambos_Si';\n    } else if (mes === 'no' && sem === 'no') {\n        estado = 'Ambos_No';\n    } else if (mes === 'no' && sem === 'si') {\n        estado = 'Mes_No_Sem_Si';\n    } else if (mes === 'si' && sem === 'no') {\n        estado = 'Mes_Si_Sem_No';\n    }\n\n    data.estado = estado;\n\n    outputItems.push({ json: data });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        -288
+      ],
+      "id": "4bfe66ef-720a-4698-8223-00ca90e5261b",
+      "name": "Code | Correción"
     }
   ],
   "pinData": {},
@@ -232,16 +434,15 @@
       "main": [
         [
           {
-            "node": "Cargar_Horas",
+            "node": "Cargar_Horas_Mes",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "If_horas": {
-      "main": [
-        [
+          },
+          {
+            "node": "Cargar_Horas_Semana",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Cargar_correos",
             "type": "main",
@@ -250,11 +451,65 @@
         ]
       ]
     },
-    "Merge": {
+    "Cargar_Horas_Mes": {
       "main": [
         [
           {
-            "node": "Edit Fields Horas Correos",
+            "node": "Merge | HH Mes - Sem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar_Horas_Semana": {
+      "main": [
+        [
+          {
+            "node": "Merge | HH Mes - Sem",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit Fields Horas Mes Correos": {
+      "main": [
+        [
+          {
+            "node": "Code | Correción",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch | Evalua HH Mes Semana": {
+      "main": [
+        [
+          {
+            "node": "Send | Ambos_Si",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send | Mes_Si_Sem_No",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send | Mes_No_Sem_Si",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send | Ambos_No",
             "type": "main",
             "index": 0
           }
@@ -265,34 +520,40 @@
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "Merge | HH - Correos",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "Cargar_Horas": {
+    "Merge | HH Mes - Sem": {
       "main": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "If_horas",
+            "node": "Merge | HH - Correos",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields Horas Correos": {
+    "Merge | HH - Correos": {
       "main": [
         [
           {
-            "node": "Send a message",
+            "node": "Edit Fields Horas Mes Correos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Correción": {
+      "main": [
+        [
+          {
+            "node": "Switch | Evalua HH Mes Semana",
             "type": "main",
             "index": 0
           }
@@ -302,9 +563,11 @@
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
-  "versionId": "3e236e96-4964-47cd-a17b-fe21362e6f2b",
+  "versionId": "dc9bb0f6-e65a-4c31-a8ec-02312eea10a1",
   "meta": {
     "templateId": "self-building-ai-agent",
     "templateCredsSetupCompleted": true,

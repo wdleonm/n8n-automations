@@ -1,0 +1,369 @@
+{
+  "name": "Tickets Pendientes por Colaborador V3",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 30 8,14 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1264,
+        192
+      ],
+      "id": "35a0adfe-5f9f-4033-aad3-3e6fe9793d0c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=🚨 URGENTE: Tienes {{ $json.Cantidad_Tickets }} tickets pendientes (Incidencias VENCIDAS detectadas)",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Se ha detectado que tienes <b>tickets con el tiempo de resolución (TTR) VENCIDO</b>. Por favor, dales prioridad inmediata.</p>\n\n<p>Aquí tienes el resumen de tu bandeja:</p>\n\n{{ $json.Html_Tickets }}\n\n<p style=\"color: #D32F2F; margin-top: 15px;\"><b>⚠️ Por favor, gestiona los tickets marcados en ROJO lo antes posible.</b></p>\n\n<p>Saludos cordiales,</p>\n<p>—</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "c126c49b-9e16-43dd-8eb7-20dcca42302a",
+      "name": "Send | Critico",
+      "webhookId": "f0988ecc-ee82-474b-8a36-445675844eaf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=⚠️ Atención: Tienes  {{ $json.Cantidad_Tickets }} Tickets próximos a vencer hoy",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Te informamos que tienes <b>tickets próximos a vencer</b> (menos de 8 horas de vigencia). Te sugerimos revisarlos para evitar incumplimientos de SLA y que pasen a estado crítico.</p>\n\n<p>Aquí tienes el resumen de tu bandeja:</p>\n\n{{ $json.Html_Tickets }}\n\n<p style=\"color: #FBC02D; margin-top: 15px;\"><b>🟡 Por favor, intenta gestionar los tickets marcados en AMARILLO durante tu jornada.</b></p>\n\n<p>Saludos cordiales,</p>\n<p>—</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        192
+      ],
+      "id": "7d8547ec-cf6a-4c1e-b438-fd605199b43b",
+      "name": "Send | Advertencia",
+      "webhookId": "301a4ebe-5f88-4157-a809-681e068a47f5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Correo }}",
+        "subject": "=📋 Resumen de {{ $json.Cantidad_Tickets }} Tickets Activos: pendientes ",
+        "message": "=<p>Estimado(a) <b>{{ $json.Colaborador }}</b>,</p>\n\n<p>Este es tu reporte periódico de tickets activos. Actualmente, tus casos están dentro de los tiempos establecidos o en espera. Para el caso de los que están en espera por favor validar los días que tiene pendiente el ticket y si la espera es por casuas del cliente, poder buscar una confirmación para cerrarlo.</p>\n\n{{ $json.Html_Tickets }}\n\n<p>Gracias por mantener tu bandeja al día.</p>\n\n<p>Saludos cordiales,</p>\n<p>—</p>\n<p><b>Williams León</b></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        384
+      ],
+      "id": "14c02931-3b5b-471e-8033-45097b46b3ba",
+      "name": "Send | Normal",
+      "webhookId": "d6ad82d6-9ae1-46e9-a7f3-b391b66ed2f9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "9iwAwTdzcuyhsHZ1",
+          "name": "Gmail account wleon@intelix.biz"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "34dfff38-24dc-4e69-a7cc-29002fd20441",
+                    "leftValue": "={{ $json.Switch_Route }}",
+                    "rightValue": "Critico",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d6f08c39-7b7a-4b65-a7aa-813df6de8728",
+                    "leftValue": "={{ $json.Switch_Route }}",
+                    "rightValue": "Advertencia",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "109d7a6e-7528-40c1-a9ed-b1c21d26ad46",
+                    "leftValue": "={{ $json.Switch_Route }}",
+                    "rightValue": "Normal",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -368,
+        176
+      ],
+      "id": "17edeb1e-ce41-4536-a4b1-71a8e1914129",
+      "name": "Switch | Evalua Vigencia"
+    },
+    {
+      "parameters": {
+        "jsCode": "const tickets = items;\nconst reportesPorTecnico = {};\n\nfunction parseSQLDate(dateStr) {\n    if (!dateStr) return null;\n    let t = dateStr.toString().split(/[- :]/);\n    return new Date(t[0], t[1]-1, t[2], t[3] || 0, t[4] || 0, t[5] || 0);\n}\n\nfor (const item of tickets) {\n    const json = item.json;\n    const tecnico = json[\"Asignado a\"];\n    const idTicket = json[\"Nro. Ticket\"];\n    const status = json[\"Status\"];\n    const email = json[\"Correo\"]; \n\n    if (!tecnico || !idTicket) continue;\n\n    if (!reportesPorTecnico[tecnico]) {\n        reportesPorTecnico[tecnico] = {\n            tecnico: tecnico,\n            email: email,\n            tickets: [],\n            idsVistos: new Set(),\n            prioridadMaxima: \"Normal\"\n        };\n    }\n\n    if (reportesPorTecnico[tecnico].idsVistos.has(idTicket)) continue;\n    reportesPorTecnico[tecnico].idsVistos.add(idTicket);\n\n    const ahora = new Date();\n    const utc = ahora.getTime() + (ahora.getTimezoneOffset() * 60000);\n    const horaCaracas = new Date(utc + (3600000 * -4));\n    \n    let statusAnalisis = { tipo: \"Normal\", mensaje: \"\", color: \"#388E3C\", icono: \"🟢\" };\n\n    if (status === \"En espera\") {\n        const apertura = parseSQLDate(json[\"Fecha de apertura\"]);\n        let diasAbierto = 0;\n        if (apertura) {\n            const diffMs = horaCaracas - apertura;\n            diasAbierto = Math.floor(diffMs / (1000 * 60 * 60 * 24));\n        }\n        statusAnalisis.mensaje = `${diasAbierto < 0 ? 0 : diasAbierto} días abierto`;\n        statusAnalisis.color = \"#808080\";\n        statusAnalisis.icono = \"⏳\";\n    } \n    else {\n        const ttr = parseSQLDate(json[\"TTR\"]);\n        if (ttr) {\n            const diffMs = ttr - horaCaracas;\n            const diffHoras = diffMs / (1000 * 60 * 60);\n            \n            if (diffHoras <= 4) {\n                statusAnalisis = { tipo: \"Critico\", color: \"#D32F2F\", icono: \"🔴\" };\n                statusAnalisis.mensaje = diffHoras < 0 ? `Vencido hace ${Math.abs(diffHoras).toFixed(1)}h` : `Crítico: ${diffHoras.toFixed(1)}h`;\n                reportesPorTecnico[tecnico].prioridadMaxima = \"Critico\";\n            } \n            else if (diffHoras > 4 && diffHoras <= 8) {\n                statusAnalisis = { tipo: \"Advertencia\", color: \"#FBC02D\", icono: \"🟡\" };\n                statusAnalisis.mensaje = `Advertencia: ${diffHoras.toFixed(1)}h`;\n                if (reportesPorTecnico[tecnico].prioridadMaxima !== \"Critico\") {\n                    reportesPorTecnico[tecnico].prioridadMaxima = \"Advertencia\";\n                }\n            } \n            else {\n                statusAnalisis = { tipo: \"Normal\", color: \"#388E3C\", icono: \"🟢\" };\n                statusAnalisis.mensaje = `A tiempo: ${diffHoras.toFixed(1)}h`;\n            }\n        } else {\n            statusAnalisis.mensaje = \"Sin TTR definido\";\n        }\n    }\n\n    reportesPorTecnico[tecnico].tickets.push({\n        id: idTicket,\n        titulo: json[\"Título\"],\n        status: status,\n        ...statusAnalisis\n    });\n}\n\nreturn Object.values(reportesPorTecnico).map(datos => {\n    let htmlTable = `<table style=\"width:100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13px;\">\n        <tr style=\"background-color: #f2f2f2; text-align: left;\">\n            <th style=\"padding: 8px; border: 1px solid #ddd;\">ID (Click para ir)</th>\n            <th style=\"padding: 8px; border: 1px solid #ddd;\">Estado</th>\n            <th style=\"padding: 8px; border: 1px solid #ddd;\">Tiempo</th>\n            <th style=\"padding: 8px; border: 1px solid #ddd;\">Título</th>\n        </tr>`;\n    \n    datos.tickets.forEach(t => {\n        // --- CONSTRUCCIÓN DEL LINK DINÁMICO ---\n        const urlTicket = `https://cs.intelix.biz/front/ticket.form.php?id=${t.id}`;\n        \n        htmlTable += `<tr>\n            <td style=\"padding: 8px; border: 1px solid #ddd; white-space: nowrap;\">\n                <a href=\"${urlTicket}\" style=\"color: #004a99; text-decoration: none; font-weight: bold;\">#${t.id}</a>\n            </td>\n            <td style=\"padding: 8px; border: 1px solid #ddd; white-space: nowrap;\">${t.icono} ${t.status}</td>\n            <td style=\"padding: 8px; border: 1px solid #ddd; color: ${t.color}; font-weight: bold; white-space: nowrap;\">${t.mensaje}</td>\n            <td style=\"padding: 8px; border: 1px solid #ddd;\">${t.titulo}</td>\n        </tr>`;\n    });\n    htmlTable += `</table>`;\n\n    return {\n        json: {\n            Switch_Route: datos.prioridadMaxima,\n            Colaborador: datos.tecnico,\n            Correo: datos.email || 'soporte@tuempresa.com',\n            Html_Tickets: htmlTable,\n            Cantidad_Tickets: datos.tickets.length\n        }\n    };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        192
+      ],
+      "id": "6ee0c97e-f665-4deb-80d9-32e80dcd1219",
+      "name": "Code | Logica"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ",
+          "mode": "list",
+          "cachedResultName": "Xtiming Reporte de HH-Solicitudes-Asignaciones 01-11-2024 al 19-12-2025 09:45am",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 274560561,
+          "mode": "list",
+          "cachedResultName": "Correos y Grupos GLPI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11Hgwt7bkNZ48C7GTL-gC3FjN0n2sICrb9EjvjIrZQNQ/edit#gid=274560561"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "specifyRangeA1",
+              "range": "A1:B16"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1040,
+        96
+      ],
+      "id": "a29ccbea-1f62-415e-ad59-acda53bd03ae",
+      "name": "Cargar_correos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eULwmncC01bWxHaV",
+          "name": "Google Sheets wleon"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "[\"Asignado a\"]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -816,
+        192
+      ],
+      "id": "8b8b25cc-ea7d-4efd-8368-d0e24e8b1a1a",
+      "name": "Merge | Tickets y Correos",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    gt.id as 'Nro. Ticket',\n    gt.name as 'Título',\n    gt.date as 'Fecha de apertura',\n    CONVERT_TZ(gt.time_to_resolve, 'UTC', 'America/Caracas') as 'TTR',\n    CASE \n        WHEN gt.status = 2 THEN 'En curso asignado'\n        WHEN gt.status = 4 THEN 'En espera'\n        ELSE gt.status \n    END as 'Status',\n    CONCAT(user_asig.realname, ' ', user_asig.firstname) as 'Asignado a'\nFROM glpidb.glpi_tickets AS gt\n    LEFT JOIN glpidb.glpi_tickets_users gtu ON gtu.tickets_id = gt.id AND gtu.type = 2\n    LEFT JOIN glpidb.glpi_users user_asig ON user_asig.id = gtu.users_id \n    LEFT JOIN glpidb.glpi_groups_tickets ggt ON ggt.tickets_id = gt.id\n    LEFT JOIN glpidb.glpi_groups gg ON gg.id = ggt.groups_id \nWHERE gg.id IN (39,176,177,42,179,182,178,89,158,184,180,224) -- Agregamos el 224 que es BD por si hay mal categorizados\n    AND gt.status IN (2,4) \n    AND gt.solvedate IS NULL \n    AND gt.closedate IS NULL\n    AND gt.is_deleted = 0\n    AND gt.date >= DATE_SUB(NOW(), INTERVAL 45 DAY)\nGROUP BY gt.id\nORDER BY gt.date ASC",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -1040,
+        288
+      ],
+      "id": "a322d874-590a-4d47-aa79-63c72eba38cc",
+      "name": "Query BD GLPI",
+      "credentials": {
+        "mySql": {
+          "id": "8XSC4vYDfVZ4SUB5",
+          "name": "MySQL GLPI glpi_rpt"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Cargar_correos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Query BD GLPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch | Evalua Vigencia": {
+      "main": [
+        [
+          {
+            "node": "Send | Critico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send | Advertencia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send | Normal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code | Logica": {
+      "main": [
+        [
+          {
+            "node": "Switch | Evalua Vigencia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar_correos": {
+      "main": [
+        [
+          {
+            "node": "Merge | Tickets y Correos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge | Tickets y Correos": {
+      "main": [
+        [
+          {
+            "node": "Code | Logica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query BD GLPI": {
+      "main": [
+        [
+          {
+            "node": "Merge | Tickets y Correos",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "87ba3b17-1020-4539-9fef-65480f9c0947",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e6457e14eae7e20b31dd81dd90e6c21dfd0e0662b1269b1bd78b64ba0fd2a545"
+  },
+  "id": "axdwLecpSm1KcZvC",
+  "tags": []
+}
